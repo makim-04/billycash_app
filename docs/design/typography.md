@@ -23,14 +23,12 @@ Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, s
 
 ---
 
-## Font Weight
+## Font Weight (200 increments, min 400)
 
 | Weight | 역할 |
 |--------|------|
-| **900** | 완료 아이콘, Q 마크 |
-| **800** | 타이틀, 카드 이름, 수치 강조 |
-| **700** | 버튼, 필터, 태그, 서브 타이틀 |
-| **600** | 라벨, 날짜, 메타 정보 |
+| **800** | 타이틀, 카드 이름, 수치 강조, Q 마크 |
+| **600** | 버튼, 필터, 태그, 라벨, 날짜, 메타 정보 |
 | 400 | 일반 본문 (기본값) |
 
 ---
@@ -66,14 +64,14 @@ Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, s
 ```
 타이틀:    xl(28) / 800 / 1.3 / -.02em
 설명:      sm(16) / 400 / 1.7
-뱃지:      xs(12) / 700
+뱃지:      xs(12) / 600
 통계 수치: md(20) / 800
 통계 라벨: xs(12) / 400
 ```
 
 ### Page Hero (서브페이지)
 ```
-라벨:   xs(12) / 700 / .08em / uppercase
+라벨:   xs(12) / 600 / .08em / uppercase
 타이틀: lg(24) / 800 / 1.3 / -.02em
 설명:   sm(16) / 400 / 1.6
 ```
@@ -83,28 +81,28 @@ Pretendard Variable, Pretendard, -apple-system, BlinkMacSystemFont, system-ui, s
 이름:      sm(16) / 800 / -.02em
 서브:      xs(12) / 400
 퍼센트:    md(20) / 800
-상태/태그: xs(12) / 700
+상태/태그: xs(12) / 600
 메타 라벨: xs(12) / 600
 메타 값:   sm(16) / 800
 ```
 
 ### Button
 ```
-Primary: sm(16) / 700
-Outline: sm(16) / 700
-Small:   xs(12) / 700
+Primary: sm(16) / 600
+Outline: sm(16) / 600
+Small:   xs(12) / 600
 ```
 
 ### Tag / Filter / Tab
 ```
-전부 xs(12) / 700
+전부 xs(12) / 600
 ```
 
 ### Form (Auth)
 ```
 제목:   md(20) / 800
 설명:   sm(16) / 400
-라벨:   xs(12) / 700
+라벨:   xs(12) / 600
 입력:   sm(16) / 400
 에러:   xs(12) / 600
 ```
@@ -124,6 +122,6 @@ Small:   xs(12) / 700
 ## Principles
 
 1. **5단계 사이즈** — 12, 16, 20, 24, 28px (4px 간격)
-2. **Weight는 역할 기반** — 타이틀=800, 인터랙티브=700, 라벨=600, 본문=400
+2. **3단계 웨이트** — 800(강조), 600(인터랙티브/라벨), 400(본문)
 3. **CSS 변수 사용 필수** — 하드코딩된 px 값 대신 `var(--font-*)` 사용
 4. **최소 사이즈 12px** — 접근성을 위해 12px 미만 사용 금지
