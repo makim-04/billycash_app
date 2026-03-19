@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
 import InvestCard from '../components/InvestCard';
 import { INVEST_CARDS } from '../data';
 
@@ -18,6 +19,7 @@ export default function InvestPage() {
 
   return (
     <div>
+      <PageHeader title="투자" />
       <div className="page-hero-app">
         <div className="page-hero-app__glow" />
         <div className="page-hero-app__label">✦ Investment</div>

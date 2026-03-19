@@ -7,11 +7,12 @@ export default function LoginPage() {
   const { isLoggedIn, login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [autoLogin, setAutoLogin] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn) navigate('/my', { replace: true });
+    if (isLoggedIn) navigate('/', { replace: true });
   }, [isLoggedIn, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,23 +22,21 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     setTimeout(() => {
-      login(email, password);
+      login(email, password, autoLogin);
       setLoading(false);
-      navigate('/my');
+      navigate('/');
     }, 800);
   };
 
   return (
     <div>
-      <div className="page-hero-app">
-        <div className="page-hero-app__glow" />
-        <div className="page-hero-app__label">✦ Login</div>
-        <h1 className="page-hero-app__title">빌리캐시 <span className="yellow">로그인</span></h1>
+      <div className="login-hero-app">
+        <img src="/images/logo-symbol.png" alt="빌리캐시" className="login-hero-app__logo" />
+        <h1 className="login-hero-app__title">빌리캐시</h1>
+        <p className="login-hero-app__desc">소상공인 조각투자 플랫폼</p>
       </div>
       <div className="auth-section">
         <form className="auth-card" onSubmit={handleSubmit}>
-          <h2 className="auth-card__title">로그인</h2>
-          <p className="auth-card__desc">투자 현황과 토큰 잔고를 확인하세요.</p>
           <div className="auth-field">
             <label className="auth-label">이메일</label>
             <input
@@ -60,6 +59,14 @@ export default function LoginPage() {
               autoComplete="current-password"
             />
           </div>
+          <label className="auth-checkbox">
+            <input
+              type="checkbox"
+              checked={autoLogin}
+              onChange={e => setAutoLogin(e.target.checked)}
+            />
+            <span>자동 로그인</span>
+          </label>
           {error && <div className="auth-error">{error}</div>}
           <button
             type="submit"

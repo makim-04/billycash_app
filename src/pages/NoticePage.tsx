@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PageHeader from '../components/PageHeader';
 import { NOTICES, NOTICE_BODIES } from '../data';
 import type { Notice } from '../types/domain';
 
@@ -34,6 +35,7 @@ export default function NoticePage() {
 
   return (
     <div>
+      <PageHeader title="공지" />
       <div className="page-hero-app">
         <div className="page-hero-app__glow" />
         <div className="page-hero-app__label">✦ Notice</div>

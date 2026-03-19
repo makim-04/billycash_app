@@ -52,10 +52,11 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 #root{display:flex;justify-content:center;align-items:center;min-height:100vh}
 
 /* ═══════════════ APP SHELL ═══════════════ */
-.app-shell{width:var(--app-width);height:var(--app-height);background:var(--white);position:relative;overflow:hidden;border-radius:40px;box-shadow:0 0 0 8px #1a1a2e,0 0 0 10px #333,var(--shadow-l)}
-.app-content{height:100%;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:var(--tab-bar-height)}
+.app-shell{width:var(--app-width);height:var(--app-height);background:var(--white);position:relative;overflow:hidden;border-radius:40px;box-shadow:0 0 0 8px #1a1a2e,0 0 0 10px #333,var(--shadow-l);display:flex;flex-direction:column}
+.app-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:var(--tab-bar-height);min-height:0}
 .app-content::-webkit-scrollbar{display:none}
 .app-content{-ms-overflow-style:none;scrollbar-width:none}
+.app-content--no-tab{padding-bottom:20px}
 
 /* ── Status Bar ── */
 .status-bar{height:var(--status-bar-height);display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 8px;background:var(--white);position:sticky;top:0;z-index:100}
@@ -75,7 +76,7 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 .btn-primary:active{background:var(--billy-dark)}
 .btn-outline{display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--dark);font-family:var(--ff);font-size:var(--font-sm);font-weight:600;padding:10px 20px;border-radius:100px;border:1.5px solid var(--border);cursor:pointer;transition:border-color var(--ease)}
 .btn-outline:active{border-color:var(--dark)}
-.btn-sm{padding:8px 14px!important;font-size:var(--font-xs)!important}
+.btn-sm{padding:8px 14px!important;font-size:var(--font-sm)!important;border-radius:12px!important}
 
 /* ═══════════════ TAGS ═══════════════ */
 .tag{display:inline-flex;align-items:center;padding:4px 10px;border-radius:100px;font-size:var(--font-xs);font-weight:600;letter-spacing:.03em}
@@ -114,20 +115,28 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 
 @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 
+/* ═══════════════ HOME TOP BAR ═══════════════ */
+.home-topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--white)}
+.home-topbar__left{display:flex;align-items:center;gap:10px}
+.home-topbar__logo{height:24px;width:auto;object-fit:contain}
+.home-topbar__user{display:flex;align-items:center;gap:4px;background:var(--pale);border:none;border-radius:100px;padding:6px 12px 6px 14px;cursor:pointer;font-family:var(--ff)}
+.home-topbar__name{font-size:var(--font-xs);font-weight:600;color:var(--black)}
+.home-topbar__user svg{color:var(--light)}
+.home-topbar__right{display:flex;align-items:center;gap:4px}
+.home-topbar__icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--dark);border-radius:50%;transition:background var(--ease)}
+.home-topbar__icon:active{background:var(--pale)}
+
 /* ═══════════════ HOME PAGE ═══════════════ */
-.app-hero{padding:24px 16px 20px;background:var(--black);position:relative;overflow:hidden}
+.app-hero{min-height:280px;padding:48px 20px 32px;background:var(--black) url('/images/hero-bg.webp') center/cover no-repeat;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+.app-hero::before{content:'';position:absolute;inset:0;background:rgba(255,212,0,.1);z-index:0}
+.app-hero>*{position:relative;z-index:1}
 .app-hero__glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,0,.12) 0%,transparent 65%);pointer-events:none}
-.app-hero__badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);color:var(--white);font-size:var(--font-xs);font-weight:600;padding:5px 12px;border-radius:100px;margin-bottom:14px}
-.app-hero__badge-dot{width:5px;height:5px;border-radius:50%;background:var(--billy);animation:pulse-dot 2s ease-in-out infinite}
-.app-hero__title{font-size:var(--font-xl);font-weight:800;color:var(--white);line-height:1.3;letter-spacing:-.02em;margin-bottom:10px}
-.app-hero__title .yellow{color:var(--billy)}
-.app-hero__desc{font-size:var(--font-sm);font-weight:200;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:16px}
-.app-hero__desc strong{color:rgba(255,255,255,.8)}
-.app-hero__stats{display:flex;border:1px solid rgba(255,255,255,.1);border-radius:var(--r-md);overflow:hidden}
-.app-hero__stat{flex:1;padding:12px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
-.app-hero__stat:last-child{border-right:none}
-.app-hero__stat-num{font-size:var(--font-md);font-weight:800;color:var(--billy);margin-bottom:2px}
-.app-hero__stat-label{font-size:var(--font-xs);color:rgba(255,255,255,.4)}
+.app-hero__badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.45);backdrop-filter:blur(12px);color:var(--black);font-size:var(--font-xs);font-weight:600;padding:5px 12px;border-radius:100px;margin-bottom:16px;align-self:flex-start}
+.app-hero__badge-dot{width:5px;height:5px;border-radius:50%;background:var(--billy-dark);animation:pulse-dot 2s ease-in-out infinite}
+.app-hero__title{font-size:var(--font-xl);font-weight:800;color:var(--black);line-height:1.3;letter-spacing:-.02em;margin-bottom:12px}
+.app-hero__title .yellow{color:var(--black);background:rgba(255,255,255,.5);padding:0 6px;border-radius:4px}
+.app-hero__desc{font-size:var(--font-sm);font-weight:200;color:rgba(35,31,32,.7);line-height:1.7;margin-bottom:0}
+.app-hero__desc strong{color:var(--black);font-weight:600}
 
 /* ── How Steps ── */
 .how-grid{display:flex;flex-direction:column;gap:12px}
@@ -276,28 +285,71 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 .faq-no-result{text-align:center;padding:40px 0;color:var(--light);font-size:var(--font-sm)}
 
 /* ═══════════════ LOGIN / SIGNUP ═══════════════ */
-.auth-section{padding:24px 16px}
-.auth-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px}
-.auth-card__title{font-size:var(--font-md);font-weight:800;color:var(--black);margin-bottom:6px}
-.auth-card__desc{font-size:var(--font-sm);font-weight:200;color:var(--mid);margin-bottom:20px}
-.auth-field{margin-bottom:14px}
-.auth-label{display:block;font-size:var(--font-xs);font-weight:600;color:var(--dark);margin-bottom:6px}
-.auth-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--ff);font-size:var(--font-sm);color:var(--dark);outline:none;transition:border-color var(--ease);background:var(--white)}
+.auth-page-center{display:flex;flex-direction:column;justify-content:center;min-height:100%}
+.signup-page{display:flex;flex-direction:column}
+.signup-topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;height:44px}
+.signup-topbar__back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:none;border:none;cursor:pointer;color:var(--dark);border-radius:50%}
+.signup-topbar__back:active{background:var(--pale)}
+.signup-topbar__title{font-size:var(--font-sm);font-weight:800;color:var(--black);position:absolute;left:50%;transform:translateX(-50%)}
+.signup-topbar__spacer{width:32px}
+.signup-page .signup-progress{padding:12px 16px 0}
+.signup-page .auth-section{padding:16px 16px 0}
+.signup-step2__footer{position:sticky;bottom:0;padding:12px 16px 12px;background:var(--white);border-top:1px solid var(--border);z-index:10;box-shadow:0 -4px 12px rgba(0,0,0,.06);margin-top:auto;margin-bottom:12px}
+.login-hero-app{padding:48px 16px 32px;text-align:center}
+.login-hero-app__logo{width:56px;height:56px;object-fit:contain;margin-bottom:12px}
+.login-hero-app__title{font-size:var(--font-lg);font-weight:800;color:var(--black);margin-bottom:4px}
+.login-hero-app__desc{font-size:var(--font-sm);font-weight:400;color:var(--mid)}
+.auth-section{padding:0 16px 24px}
+.auth-card{background:var(--white);border:none;border-radius:var(--r-lg);padding:24px}
+.auth-card__title{font-size:var(--font-md);font-weight:800;color:var(--black);margin-bottom:8px}
+.auth-card__desc{font-size:var(--font-sm);font-weight:400;color:var(--mid);margin-bottom:24px}
+.auth-field{margin-bottom:18px}
+.auth-label{display:block;font-size:var(--font-sm);font-weight:600;color:var(--dark);margin-bottom:8px}
+.auth-input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:var(--ff);font-size:var(--font-sm);color:var(--dark);outline:none;transition:border-color var(--ease);background:var(--white)}
 .auth-input:focus{border-color:var(--billy)}
 .auth-input:disabled{background:var(--pale);color:var(--light)}
 .auth-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--red);font-size:var(--font-xs);font-weight:600;padding:10px 14px;border-radius:var(--r-sm);margin-top:12px}
 .auth-input-row{display:flex;gap:8px}
 .auth-input-row .auth-input{flex:1}
-.auth-links{text-align:center;margin-top:14px;font-size:var(--font-sm);font-weight:200;color:var(--mid)}
+.auth-links{text-align:center;margin-top:14px;font-size:var(--font-xs);font-weight:400;color:var(--mid)}
 .auth-links a{color:var(--billy-dark);font-weight:600;margin-left:4px}
 .signup-progress{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px}
 .signup-progress__step{display:flex;align-items:center;gap:6px;font-size:var(--font-xs);font-weight:600;color:var(--light)}
 .signup-progress__step.active{color:var(--black)}
 .signup-progress__step span{width:24px;height:24px;border-radius:50%;background:var(--border);color:var(--light);display:flex;align-items:center;justify-content:center;font-size:var(--font-xs);font-weight:800}
 .signup-progress__step.active span{background:var(--billy);color:var(--black)}
+.signup-progress__step.clickable{cursor:pointer;color:var(--billy-dark)}
+.signup-progress__step.clickable span{background:var(--billy);color:var(--black)}
 .signup-progress__line{width:28px;height:2px;background:var(--border);margin:0 8px}
-.auth-checkbox{display:flex;align-items:center;gap:8px;font-size:var(--font-sm);font-weight:200;color:var(--mid);cursor:pointer;margin-top:14px}
+.auth-checkbox{display:flex;align-items:center;gap:8px;font-size:var(--font-xs);font-weight:400;color:var(--mid);cursor:pointer;margin-top:14px}
 .auth-checkbox input[type="checkbox"]{width:16px;height:16px;accent-color:var(--billy)}
+/* Agree Section */
+.agree-section{margin-top:16px;border-top:1px solid var(--border);padding-top:14px}
+.agree-all{font-weight:600!important;color:var(--black)!important;margin-top:0!important}
+.agree-items{margin-top:8px;padding-left:4px;display:flex;flex-direction:column;gap:4px}
+.agree-row{display:flex;align-items:center;justify-content:space-between}
+.agree-row .auth-checkbox{margin-top:0;flex:1}
+.agree-view{background:none;border:none;font-family:var(--ff);font-size:var(--font-xs);font-weight:600;color:var(--light);cursor:pointer;padding:4px 0;flex-shrink:0;text-decoration:underline}
+.agree-view:active{color:var(--dark)}
+/* Agree Modal */
+.agree-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center}
+.agree-modal{background:var(--white);border-radius:var(--r-lg) var(--r-lg) 0 0;width:var(--app-width);max-height:70%;display:flex;flex-direction:column;padding:20px;animation:agree-slide-up .3s ease}
+.agree-modal__header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.agree-modal__title{font-size:var(--font-sm);font-weight:800;color:var(--black)}
+.agree-modal__close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--pale);border:none;border-radius:50%;font-size:var(--font-xs);color:var(--mid);cursor:pointer}
+.agree-modal__body{flex:1;overflow-y:auto;font-size:var(--font-xs);font-weight:400;color:var(--mid);line-height:1.6}
+.agree-modal__body p{margin-bottom:10px}
+@keyframes agree-slide-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+/* Verify Done Animation */
+.verify-done{position:relative;width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.verify-done__circle{position:absolute;inset:0;width:36px;height:36px}
+.verify-done__circle circle{fill:none;stroke:var(--green);stroke-width:2;stroke-dasharray:100;stroke-dashoffset:100;stroke-linecap:round;animation:verify-circle .5s ease forwards}
+.verify-done__check{position:relative;width:20px;height:20px}
+.verify-done__check polyline{fill:none;stroke:var(--green);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:30;animation:verify-check .3s ease .4s forwards}
+@keyframes verify-circle{to{stroke-dashoffset:0}}
+@keyframes verify-check{to{stroke-dashoffset:0}}
+
 .signup-done-icon{width:52px;height:52px;border-radius:50%;background:var(--billy);color:var(--black);font-size:var(--font-lg);font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 
 /* ═══════════════ MY PAGE ═══════════════ */
@@ -395,6 +447,206 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 .about-card{background:var(--white);border-radius:var(--r-sm);padding:14px;box-shadow:var(--shadow-s)}
 .about-card h3{font-size:var(--font-sm);font-weight:800;color:var(--black);margin-bottom:4px}
 .about-card p{font-size:var(--font-xs);color:var(--mid);line-height:1.6}
+
+/* ═══════════════ SUBPAGE (입출금/투자신청) ═══════════════ */
+.subpage{display:flex;flex-direction:column;height:100%}
+.subpage-topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;height:44px;position:relative}
+.subpage-topbar__back{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:none;border:none;cursor:pointer;color:var(--dark);border-radius:50%}
+.subpage-topbar__back:active{background:var(--pale)}
+.subpage-topbar__title{font-size:var(--font-sm);font-weight:800;color:var(--black);position:absolute;left:50%;transform:translateX(-50%)}
+.subpage-topbar__spacer{width:32px}
+.subpage-topbar__action{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:none;border:none;cursor:pointer;color:var(--mid);border-radius:50%}
+.subpage-topbar__action:active{background:var(--pale)}
+.subpage-footer{position:sticky;bottom:0;padding:12px 16px;background:var(--white);border-top:1px solid var(--border);box-shadow:0 -4px 12px rgba(0,0,0,.06);margin-top:auto}
+
+/* Deposit / Withdraw */
+.deposit-content{padding:0 16px;display:flex;flex-direction:column;flex:1}
+.deposit-balance{background:var(--black);border-radius:var(--r-md);padding:20px;margin-bottom:16px;text-align:center}
+.deposit-balance__label{display:block;font-size:var(--font-xs);color:rgba(255,255,255,.5);margin-bottom:4px}
+.deposit-balance__value{display:block;font-size:var(--font-lg);font-weight:800;color:var(--white)}
+.deposit-balance__sub{display:block;font-size:var(--font-xs);color:rgba(255,255,255,.4);margin-top:2px}
+.deposit-section{margin-bottom:16px}
+.deposit-amount-display{font-size:var(--font-lg);font-weight:800;color:var(--black);text-align:center;padding:16px;background:var(--pale);border-radius:var(--r-sm);margin-top:8px;margin-bottom:8px}
+.deposit-amount-min{font-size:var(--font-xs);color:var(--light);text-align:center;margin-bottom:8px}
+.deposit-quick-btns{display:flex;gap:6px}
+.deposit-quick-btn{flex:1;padding:10px 0;border-radius:var(--r-sm);border:1.5px solid var(--border);font-family:var(--ff);font-size:var(--font-xs);font-weight:600;color:var(--dark);background:var(--white);cursor:pointer;transition:all var(--ease)}
+.deposit-quick-btn:active{background:var(--pale);border-color:var(--dark)}
+.deposit-account-compact{background:var(--pale);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:12px}
+.deposit-account-compact__top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.deposit-account-compact__label{font-size:var(--font-xs);font-weight:600;color:var(--light)}
+.deposit-account-compact__name{font-size:var(--font-xs);font-weight:600;color:var(--mid)}
+.deposit-account-compact__bottom{display:flex;align-items:center;justify-content:space-between}
+.deposit-account-compact__num{font-size:var(--font-sm);font-weight:800;color:var(--black)}
+.deposit-account-compact__copy{background:var(--billy);border:none;border-radius:var(--r-sm);padding:4px 10px;font-family:var(--ff);font-size:var(--font-xs);font-weight:600;color:var(--black);cursor:pointer;flex-shrink:0}
+.deposit-notice{font-size:var(--font-xs);font-weight:400;color:var(--mid);line-height:1.6;padding:12px;background:var(--pale);border-radius:var(--r-sm);margin-bottom:16px}
+
+/* Wallet Sections */
+.wallet-section{margin-bottom:20px}
+.wallet-section__header{margin-bottom:10px}
+.wallet-section__title{font-size:var(--font-sm);font-weight:800;color:var(--black)}
+.wallet-withdraw-info{background:var(--pale);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:12px}
+.wallet-withdraw-info__row{display:flex;justify-content:space-between;padding:4px 0;font-size:var(--font-xs)}
+.wallet-withdraw-info__row span:first-child{color:var(--mid);font-weight:400}
+.wallet-withdraw-info__row span:last-child{font-weight:600;color:var(--black)}
+
+/* Deposit Waiting */
+.deposit-waiting{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:0 24px;text-align:center}
+.deposit-waiting__spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--billy);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.deposit-waiting__title{font-size:var(--font-md);font-weight:800;color:var(--black);margin-bottom:16px}
+.deposit-waiting__info{display:flex;flex-direction:column;gap:2px;font-size:var(--font-sm);color:var(--mid);margin-bottom:8px}
+.deposit-waiting__amount{font-size:var(--font-md);font-weight:800;color:var(--black);margin-top:4px}
+.deposit-waiting__desc{font-size:var(--font-xs);color:var(--light);margin-bottom:24px}
+.deposit-waiting__actions{width:100%}
+
+/* Deposit Done */
+.deposit-done{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:0 24px;text-align:center}
+.deposit-done__title{font-size:var(--font-md);font-weight:800;color:var(--black);margin-bottom:8px}
+.deposit-done__amount{font-size:var(--font-sm);font-weight:800;color:var(--black)}
+.deposit-done__desc{font-size:var(--font-sm);font-weight:200;color:var(--mid);margin-top:4px}
+.deposit-done__balance{display:flex;flex-direction:column;gap:2px;font-size:var(--font-xs);color:var(--mid);margin:16px 0 24px;padding:12px 20px;background:var(--pale);border-radius:var(--r-sm)}
+.deposit-done__actions{width:100%}
+
+/* Invest Apply */
+.invest-apply-product{display:flex;align-items:center;gap:12px;padding:16px;background:var(--pale);border-radius:var(--r-md);margin-bottom:16px}
+.invest-apply-product__emoji{font-size:32px;flex-shrink:0}
+.invest-apply-product__name{font-size:var(--font-sm);font-weight:800;color:var(--black)}
+.invest-apply-product__rate{font-size:var(--font-xs);color:var(--billy-dark);font-weight:600;margin-top:2px}
+.invest-apply-summary{background:var(--pale);border-radius:var(--r-sm);padding:14px 16px;margin-bottom:12px}
+.invest-apply-summary__row{display:flex;justify-content:space-between;padding:6px 0;font-size:var(--font-sm)}
+.invest-apply-summary__row span:first-child{color:var(--mid);font-weight:400}
+.invest-apply-summary__row span:last-child{font-weight:800;color:var(--black)}
+.invest-apply-confirm{background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:16px}
+.invest-apply-confirm__row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--pale);font-size:var(--font-sm)}
+.invest-apply-confirm__row:last-child{border-bottom:none}
+.invest-apply-confirm__row span:first-child{color:var(--mid);font-weight:400}
+.invest-apply-confirm__row span:last-child{font-weight:800;color:var(--black)}
+
+/* ═══════════════ TRADE (투자 매수) ═══════════════ */
+.trade-balance{font-size:var(--font-xs);font-weight:600;color:var(--mid)}
+.trade-content{flex:1;padding:0 16px;overflow-y:auto}
+/* Trade Hero */
+.trade-hero{background:var(--black);border-radius:var(--r-md);padding:18px;margin-bottom:16px}
+.trade-hero__top{display:flex;align-items:center;justify-content:space-between}
+.trade-hero__left{flex:1;min-width:0}
+.trade-hero__name{font-size:var(--font-sm);font-weight:800;color:var(--white)}
+.trade-hero__sub{font-size:var(--font-xs);font-weight:200;color:rgba(255,255,255,.5);margin-top:2px}
+.trade-hero__rate{text-align:right;flex-shrink:0;padding-left:12px}
+.trade-hero__rate-value{display:block;font-size:var(--font-sm);font-weight:800;color:var(--billy)}
+.trade-hero__rate-label{display:block;font-size:10px;font-weight:200;color:rgba(255,255,255,.4);margin-top:1px}
+/* Trade Form */
+.trade-form{margin-bottom:16px}
+.trade-input-card{background:var(--white);border:none;border-radius:var(--r-md);padding:16px;box-shadow:var(--shadow-m)}
+.trade-input-row{display:flex;align-items:center;gap:8px}
+.trade-input-label{font-size:var(--font-xs);font-weight:600;color:var(--mid);width:32px;flex-shrink:0}
+.trade-input-field{flex:1;display:flex;align-items:center;gap:4px;background:var(--pale);border-radius:var(--r-sm);padding:10px 12px;border:1.5px solid transparent;transition:border-color var(--ease);min-width:0;overflow:hidden}
+.trade-input-field:focus-within{border-color:var(--billy);background:var(--white);box-shadow:0 0 0 3px var(--billy-glow)}
+.trade-input{flex:1;border:none;background:none;font-family:var(--ff);font-size:var(--font-sm);font-weight:800;color:var(--black);outline:none;text-align:right;min-width:0;width:0}
+.trade-input::placeholder{color:var(--border);font-weight:400}
+.trade-input-unit{font-size:var(--font-xs);font-weight:600;color:var(--light);flex-shrink:0}
+.trade-input-min{font-size:var(--font-xs);color:var(--light);text-align:right;margin-top:6px;padding-right:4px}
+/* Swap Icon */
+.trade-input-swap{display:flex;align-items:center;gap:8px;padding:10px 0}
+.trade-input-swap__line{flex:1;height:1px;background:var(--border)}
+.trade-input-swap__icon{width:28px;height:28px;border-radius:50%;background:var(--pale);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mid);flex-shrink:0}
+.trade-input-swap__price{font-size:var(--font-xs);font-weight:600;color:var(--mid);flex-shrink:0;padding:0 6px}
+/* Trade Estimate */
+.trade-estimate{background:var(--white);border-radius:var(--r-md);padding:0;margin-bottom:12px;box-shadow:var(--shadow-s);overflow:hidden}
+.trade-estimate__row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:var(--font-sm);border-bottom:1px solid var(--pale)}
+.trade-estimate__row:last-child{border-bottom:none}
+.trade-estimate__row span:first-child{color:var(--mid);font-weight:400}
+.trade-estimate__value{font-weight:800;color:var(--billy-dark)}
+/* Trade Warning */
+.trade-warning{font-size:var(--font-xs);color:var(--red);text-align:center;padding:10px;background:rgba(239,68,68,.06);border-radius:var(--r-sm);margin-bottom:8px}
+.trade-warning button{background:none;border:none;font-family:var(--ff);font-size:var(--font-xs);font-weight:600;color:var(--billy-dark);cursor:pointer;text-decoration:underline}
+/* Trade Footer */
+.trade-footer{position:sticky;bottom:0;padding:8px 16px 12px;background:var(--white);border-top:1px solid var(--border);box-shadow:0 -4px 12px rgba(0,0,0,.06)}
+/* Trade Confirm Bottom Sheet */
+.trade-confirm-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:flex-end}
+.trade-confirm{background:var(--white);border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;padding:16px 20px 24px;animation:agree-slide-up .3s ease}
+.trade-confirm__handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 16px}
+.trade-confirm__title{font-size:var(--font-sm);font-weight:800;color:var(--black);margin-bottom:12px}
+.trade-confirm__product{font-size:var(--font-sm);font-weight:600;color:var(--black);margin-bottom:12px}
+.trade-confirm__summary{background:var(--white);border:1px solid var(--border);border-radius:var(--r-md);padding:0;margin-bottom:16px;overflow:hidden}
+.trade-confirm__row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:var(--font-sm);border-bottom:1px solid var(--pale)}
+.trade-confirm__row:last-child{border-bottom:none}
+.trade-confirm__row span:first-child{color:var(--mid);font-weight:400}
+.trade-confirm__row span:last-child{font-weight:800;color:var(--black)}
+
+/* ═══════════════ MENU PAGE ═══════════════ */
+.menu-content{padding:0 16px;overflow-y:auto;flex:1}
+/* Profile */
+.menu-profile{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--border)}
+.menu-profile__avatar{width:44px;height:44px;border-radius:50%;background:var(--white);color:var(--black);font-size:var(--font-sm);font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-m);border:2px solid var(--billy)}
+.menu-profile__info{flex:1;min-width:0}
+.menu-profile__name{font-size:var(--font-sm);font-weight:800;color:var(--black)}
+.menu-profile__email{font-size:var(--font-xs);color:var(--mid);margin-top:1px}
+.menu-profile__my{display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--black);border:none;border-radius:100px;font-family:var(--ff);font-size:var(--font-xs);font-weight:800;color:var(--white);cursor:pointer;flex-shrink:0;box-shadow:var(--shadow-m);transition:background var(--ease)}
+.menu-profile__my:active{background:var(--dark)}
+/* Search */
+.menu-search{position:relative;margin:14px 0}
+.menu-search__icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--light)}
+.menu-search__input{width:100%;padding:10px 12px 10px 36px;border:none;border-radius:var(--r-sm);font-family:var(--ff);font-size:var(--font-xs);color:var(--dark);background:var(--pale);outline:none;transition:box-shadow var(--ease)}
+.menu-search__input:focus{box-shadow:0 0 0 2px var(--billy-glow)}
+.menu-search__input::placeholder{color:var(--light)}
+/* Nav */
+.menu-nav{display:flex;flex-direction:column;gap:24px;margin-bottom:20px}
+.menu-nav__group{}
+.menu-nav__group-title{font-size:var(--font-xs);font-weight:600;color:var(--light);padding:4px 0;border:none;background:none;font-family:var(--ff);text-align:left;letter-spacing:.03em}
+.menu-nav__group-title--link{cursor:pointer;width:100%}
+.menu-nav__group-title--link:active{color:var(--billy-dark)}
+.menu-nav__children{display:flex;flex-direction:column;margin-top:4px;padding-left:12px}
+.menu-nav__child{display:block;width:100%;padding:14px 0;border:none;background:none;font-family:var(--ff);font-size:var(--font-sm);font-weight:600;color:var(--dark);cursor:pointer;text-align:left;border-bottom:1px solid var(--pale);transition:color var(--ease)}
+.menu-nav__child:last-child{border-bottom:none}
+.menu-nav__child:active{color:var(--black)}
+.menu-nav__empty{text-align:center;padding:24px 0;font-size:var(--font-xs);color:var(--light)}
+/* Logout */
+.menu-logout{display:block;width:100%;padding:12px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:none;font-family:var(--ff);font-size:var(--font-sm);font-weight:600;color:var(--mid);cursor:pointer;text-align:center;transition:all var(--ease);margin-bottom:24px}
+.menu-logout:active{background:var(--pale);border-color:var(--dark);color:var(--dark)}
+/* Footer */
+.menu-footer{text-align:center;padding:16px 0 24px;border-top:1px solid var(--border)}
+.menu-footer__version{font-size:var(--font-xs);font-weight:600;color:var(--mid);margin-bottom:4px}
+.menu-footer__copyright{font-size:10px;font-weight:200;color:var(--light);line-height:1.5}
+
+/* ═══════════════ SETTINGS ═══════════════ */
+.settings-group{padding:12px 0;border-bottom:1px solid var(--border)}
+.settings-group:last-child{border-bottom:none}
+.settings-group__title{font-size:var(--font-xs);font-weight:600;color:var(--light);margin-bottom:8px}
+.settings-item{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 4px;border:none;background:none;cursor:pointer;font-family:var(--ff);font-size:var(--font-sm);font-weight:600;color:var(--black);text-align:left}
+.settings-item svg{color:var(--border)}
+.settings-item__value{font-size:var(--font-xs);font-weight:400;color:var(--mid)}
+/* Toggle */
+.settings-toggle{width:44px;height:24px;border-radius:12px;border:none;background:var(--border);position:relative;cursor:pointer;transition:background var(--ease);flex-shrink:0}
+.settings-toggle.on{background:var(--billy)}
+.settings-toggle__thumb{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--white);box-shadow:var(--shadow-s);transition:transform var(--ease)}
+.settings-toggle.on .settings-toggle__thumb{transform:translateX(20px)}
+/* Danger */
+.settings-danger{display:block;width:100%;padding:14px;border:none;background:none;font-family:var(--ff);font-size:var(--font-sm);font-weight:600;color:var(--red);cursor:pointer;text-align:center}
+
+/* ═══════════════ PAGE HEADER ═══════════════ */
+.page-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--white)}
+.page-header__title{font-size:var(--font-md);font-weight:600;color:var(--black)}
+.page-header__actions{display:flex;gap:4px}
+.page-header__icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--dark);border-radius:50%;transition:background var(--ease)}
+.page-header__icon:active{background:var(--pale)}
+
+/* ═══════════════ SEARCH PAGE ═══════════════ */
+.search-topbar{display:flex;align-items:center;gap:8px;padding:8px 16px}
+.search-topbar__input-wrap{flex:1;position:relative;display:flex;align-items:center}
+.search-topbar__icon{position:absolute;left:12px;color:var(--light)}
+.search-topbar__input{width:100%;padding:10px 36px 10px 36px;border:none;border-radius:var(--r-sm);background:var(--pale);font-family:var(--ff);font-size:var(--font-xs);color:var(--dark);outline:none}
+.search-topbar__input:focus{box-shadow:0 0 0 2px var(--billy-glow)}
+.search-topbar__input::placeholder{color:var(--light)}
+.search-topbar__clear{position:absolute;right:10px;background:none;border:none;cursor:pointer;color:var(--light);display:flex;align-items:center}
+.search-content{flex:1;padding:0 16px;overflow-y:auto}
+.search-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;color:var(--light);text-align:center}
+.search-empty__icon{margin-bottom:12px;color:var(--border)}
+.search-empty p{font-size:var(--font-sm);font-weight:200}
+.search-results{display:flex;flex-direction:column}
+.search-result{display:flex;flex-direction:column;gap:2px;padding:14px 0;border-bottom:1px solid var(--pale);background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:var(--ff);text-align:left;transition:background var(--ease)}
+.search-result:active{background:var(--pale)}
+.search-result__type{font-size:var(--font-xs);font-weight:600;color:var(--billy-dark)}
+.search-result__label{font-size:var(--font-sm);font-weight:600;color:var(--dark);line-height:1.4}
 
 /* ═══════════════ EMPTY STATE ═══════════════ */
 .empty-state{text-align:center;padding:32px 0;color:var(--light);font-size:var(--font-sm)}

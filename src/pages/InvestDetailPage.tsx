@@ -67,7 +67,7 @@ export default function InvestDetailPage() {
           </div>
         ) : (
           <div className="detail-cta">
-            <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
+            <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => navigate(`/invest/${card.id}/apply`)}>
               투자하기 →
             </button>
             <div className="detail-cta-note">⚠️ 투자에는 원금 손실 위험이 있습니다.</div>

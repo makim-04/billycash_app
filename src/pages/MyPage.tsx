@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../components/PageHeader';
 import { useAuth } from '../context/AuthContext';
 import { MOCK_PORTFOLIO, INVEST_CARDS } from '../data';
 import InvestCard from '../components/InvestCard';
@@ -60,6 +61,7 @@ export default function MyPage() {
 
   return (
     <div>
+      <PageHeader title="MY" />
       {/* Header */}
       <div className="my-header">
         <div className="my-header__name">{user.name}님</div>
@@ -380,7 +382,7 @@ export default function MyPage() {
             <button
               className="btn-outline"
               style={{ width: '100%', justifyContent: 'center', marginTop: 16 }}
-              onClick={() => { logout(); navigate('/'); }}
+              onClick={() => { logout(); navigate('/login'); }}
             >
               로그아웃
             </button>

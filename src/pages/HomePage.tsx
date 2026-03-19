@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import HomeTopBar from '../components/HomeTopBar';
 import InvestCard from '../components/InvestCard';
 import { INVEST_CARDS } from '../data';
 
@@ -14,6 +15,8 @@ export default function HomePage() {
 
   return (
     <div>
+      <HomeTopBar />
+
       {/* Hero */}
       <section className="app-hero">
         <div className="app-hero__glow" />
@@ -29,42 +32,6 @@ export default function HomePage() {
           매달 수익 배당과 할인 혜택을 누리세요.<br />
           최소 <strong>₩10,000</strong>부터 시작할 수 있어요.
         </p>
-        <div className="app-hero__stats">
-          <div className="app-hero__stat">
-            <div className="app-hero__stat-num">1조+</div>
-            <div className="app-hero__stat-label">누적 지급액</div>
-          </div>
-          <div className="app-hero__stat">
-            <div className="app-hero__stat-num">2,847</div>
-            <div className="app-hero__stat-label">누적 투자자</div>
-          </div>
-          <div className="app-hero__stat">
-            <div className="app-hero__stat-num">15</div>
-            <div className="app-hero__stat-label">금융 파트너</div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="section-pad" style={{ background: 'var(--pale)' }}>
-        <div className="section-label"><span className="section-label__dot" />How It Works</div>
-        <h2 className="section-title">이렇게 쉬워요</h2>
-        <div className="how-grid">
-          {[
-            ["01", "마음에 드는 가게 발견", "동네 맛집, 감성 카페 중 투자하고 싶은 매장을 골라요."],
-            ["02", "1만원부터 조각 투자", "부담 없는 금액으로 시작하세요."],
-            ["03", "매출 실시간 확인", "POS·카드 데이터 연동 대시보드로 매출을 모니터링해요."],
-            ["04", "매월 수익 + 리워드", "매달 배당금이 들어오고, 할인권도 함께 받아요."],
-          ].map(([num, title, desc], i) => (
-            <div key={i} className="step-card">
-              <div className="step-num">{num}</div>
-              <div className="step-body">
-                <div className="step-title">{title}</div>
-                <div className="step-desc">{desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* Products */}
@@ -88,6 +55,28 @@ export default function HomePage() {
         >
           전체 상품 보기 →
         </button>
+      </section>
+
+      {/* How It Works */}
+      <section className="section-pad" style={{ background: 'var(--pale)' }}>
+        <div className="section-label"><span className="section-label__dot" />How It Works</div>
+        <h2 className="section-title">이렇게 쉬워요</h2>
+        <div className="how-grid">
+          {[
+            ["01", "마음에 드는 가게 발견", "동네 맛집, 감성 카페 중 투자하고 싶은 매장을 골라요."],
+            ["02", "1만원부터 조각 투자", "부담 없는 금액으로 시작하세요."],
+            ["03", "매출 실시간 확인", "POS·카드 데이터 연동 대시보드로 매출을 모니터링해요."],
+            ["04", "매월 수익 + 리워드", "매달 배당금이 들어오고, 할인권도 함께 받아요."],
+          ].map(([num, title, desc], i) => (
+            <div key={i} className="step-card">
+              <div className="step-num">{num}</div>
+              <div className="step-body">
+                <div className="step-title">{title}</div>
+                <div className="step-desc">{desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* About */}
