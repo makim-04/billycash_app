@@ -20,10 +20,9 @@ export default function InvestPage() {
   return (
     <div>
       <PageHeader title="투자" />
-      <div className="page-hero-app">
-        <div className="page-hero-app__glow" />
-        <div className="page-hero-app__label">✦ Investment</div>
-        <h1 className="page-hero-app__title">지금 투자할 수 있는<br /><span className="yellow">조각투자 상품</span>들</h1>
+      <div className="page-hero-app" style={{ backgroundImage: 'url(/images/invest/hero-invest.png)' }}>
+        <div className="page-hero-app__label">INVESTMENT</div>
+        <h1 className="page-hero-app__title">지금 신청할 수 있는<br />투자 상품들</h1>
         <p className="page-hero-app__desc">투명한 매출 데이터와 리워드 혜택까지.</p>
       </div>
       <div className="invest-filter-bar">

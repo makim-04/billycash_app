@@ -20,6 +20,7 @@ export default function InvestCard({ card, onClick, extraMeta, investorMeta, end
   const meta = extraMeta || [
     { label: '최소 투자', value: card.minInvest },
     { label: '예상 수익률', value: card.rate, accent: true },
+    { label: '발행 예정 토큰', value: `${card.totalTokens.toLocaleString()}개` },
   ];
 
   return (
