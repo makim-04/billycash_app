@@ -39,7 +39,6 @@ export default function MyPage() {
 
   const p = MOCK_PORTFOLIO;
   const activeHoldings = p.holdings.filter(h => h.status === '투자중');
-  const totalTokens = activeHoldings.reduce((s, h) => s + h.tokensOwned, 0);
   const totalInvested = activeHoldings.reduce((s, h) => s + h.purchasePrice, 0);
   const totalCurrentValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
   const totalAsset = totalCurrentValue + p.totalDividends + p.tokenBalance;
@@ -47,15 +46,8 @@ export default function MyPage() {
   const changeRate = totalInvested > 0 ? (changeAmount / totalInvested * 100).toFixed(1) : '0.0';
   const isUp = changeAmount >= 0;
 
-  // 대표 보유 상품 (토큰 발행된 상품 우선)
+  // 토큰 발행 상품
   const issuedHoldings = activeHoldings.filter(h => h.phase === '토큰 발행');
-  const topHolding = issuedHoldings.length > 0
-    ? issuedHoldings.sort((a, b) => b.currentValue - a.currentValue)[0]
-    : activeHoldings.sort((a, b) => b.currentValue - a.currentValue)[0];
-  const topCard = topHolding ? INVEST_CARDS.find(c => c.id === topHolding.investCardId) : null;
-  const topProfit = topHolding ? topHolding.currentValue - topHolding.purchasePrice : 0;
-  const topProfitRate = topHolding && topHolding.purchasePrice > 0 ? (topProfit / topHolding.purchasePrice * 100).toFixed(1) : '0.0';
-
   // 누적 수익률
   const cumulativeROI = totalInvested > 0 ? ((totalCurrentValue + p.totalDividends - totalInvested) / totalInvested * 100).toFixed(1) : '0.0';
 
