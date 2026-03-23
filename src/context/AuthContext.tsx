@@ -15,16 +15,7 @@ const STORAGE_KEY = 'billycash_app_auth';
 const AUTO_LOGIN_KEY = 'billycash_app_auto_login';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const autoLogin = localStorage.getItem(AUTO_LOGIN_KEY) === 'true';
-      if (!autoLogin) return null;
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState<User | null>(null);
 
   const login = (email: string, _password: string, autoLogin: boolean): boolean => {
     const mockUser = { ...MOCK_USER, email };
