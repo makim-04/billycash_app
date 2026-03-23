@@ -59,6 +59,8 @@ export default function MenuPage() {
   const [search, setSearch] = useState('');
   const [autoLogin, setAutoLogin] = useState(() => localStorage.getItem('billycash_app_auto_login') === 'true');
   const [notiOn, setNotiOn] = useState(true);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showWithdrawConfirm, setShowWithdrawConfirm] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -160,7 +162,21 @@ export default function MenuPage() {
           </div>
 
           {/* 로그아웃 */}
-          <button className="menu-logout" onClick={handleLogout}>로그아웃</button>
+          <button className="menu-logout" onClick={() => setShowLogoutConfirm(true)}>로그아웃</button>
+
+          {/* 로그아웃 확인 팝업 */}
+          {showLogoutConfirm && (
+            <div className="confirm-overlay" onClick={() => setShowLogoutConfirm(false)}>
+              <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+                <h3 className="confirm-dialog__title">로그아웃</h3>
+                <p className="confirm-dialog__desc">정말 로그아웃 하시겠습니까?</p>
+                <div className="confirm-dialog__actions">
+                  <button className="confirm-dialog__btn confirm-dialog__btn--cancel" onClick={() => setShowLogoutConfirm(false)}>취소</button>
+                  <button className="confirm-dialog__btn confirm-dialog__btn--confirm" onClick={handleLogout}>확인</button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 하단 정보 */}
           <div className="menu-footer">
@@ -174,11 +190,11 @@ export default function MenuPage() {
         <div className="menu-content">
           <div className="settings-group">
             <div className="settings-group__title">계정</div>
-            <button className="settings-item" onClick={() => navigate('/login')}>
-              <span>로그인 관리</span>
+            <button className="settings-item" onClick={() => navigate('/account')}>
+              <span>계정 관리</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
-            <button className="settings-item">
+            <button className="settings-item" onClick={() => navigate('/pin-setup')}>
               <span>간편 비밀번호 설정/변경</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
@@ -213,15 +229,24 @@ export default function MenuPage() {
           </div>
 
           <div className="settings-group">
-            <button className="settings-danger" onClick={() => {
-              if (confirm('정말 탈퇴하시겠습니까?')) {
-                logout();
-                navigate('/login');
-              }
-            }}>
+            <button className="settings-danger" onClick={() => setShowWithdrawConfirm(true)}>
               탈퇴하기
             </button>
           </div>
+
+          {/* 탈퇴 확인 팝업 */}
+          {showWithdrawConfirm && (
+            <div className="confirm-overlay" onClick={() => setShowWithdrawConfirm(false)}>
+              <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+                <h3 className="confirm-dialog__title">회원 탈퇴</h3>
+                <p className="confirm-dialog__desc">탈퇴 시 모든 투자 정보와 자산이 삭제됩니다. 정말 탈퇴하시겠습니까?</p>
+                <div className="confirm-dialog__actions">
+                  <button className="confirm-dialog__btn confirm-dialog__btn--cancel" onClick={() => setShowWithdrawConfirm(false)}>취소</button>
+                  <button className="confirm-dialog__btn confirm-dialog__btn--danger" onClick={() => { logout(); navigate('/login'); }}>탈퇴</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

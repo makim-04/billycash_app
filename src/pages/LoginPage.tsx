@@ -74,7 +74,7 @@ export default function LoginPage() {
             style={{ width: '100%', justifyContent: 'center', marginTop: 16 }}
             disabled={loading}
           >
-            {loading ? '로그인 중...' : '로그인'}
+            로그인
           </button>
           <div className="auth-links">
             아직 회원이 아니신가요? <Link to="/signup">회원가입 →</Link>

@@ -13,6 +13,8 @@ import SignupPage from './pages/SignupPage'
 import MyPage from './pages/MyPage'
 import MenuPage from './pages/MenuPage'
 import SearchPage from './pages/SearchPage'
+import PinSetupPage from './pages/PinSetupPage'
+import AccountPage from './pages/AccountPage'
 
 function RequireAuth() {
   const { isLoggedIn } = useAuth();
@@ -41,6 +43,8 @@ export default function App() {
             <Route path="/my" element={<MyPage />} />
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/pin-setup" element={<PinSetupPage />} />
+            <Route path="/account" element={<AccountPage />} />
           </Route>
         </Route>
       </Routes>

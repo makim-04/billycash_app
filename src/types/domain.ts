@@ -18,6 +18,7 @@ export interface InvestCard {
   reward: string;
   totalTokens: number;
   img?: string;
+  periodMonths?: number;
 }
 
 export interface FaqItem {
@@ -94,7 +95,7 @@ export interface Transaction {
   amount: number;
   tokenCount?: number;
   yieldRate?: string;
-  status: '발행' | '모집중' | '처리중' | '취소';
+  status: '발행' | '모집중' | '처리중' | '취소' | '';
 }
 
 export interface TokenTransaction {

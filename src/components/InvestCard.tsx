@@ -20,7 +20,7 @@ export default function InvestCard({ card, onClick, extraMeta, investorMeta, end
   const meta = extraMeta || [
     { label: '최소 투자', value: card.minInvest },
     { label: '예상 수익률', value: card.rate, accent: true },
-    { label: '발행 예정 토큰', value: `${card.totalTokens.toLocaleString()}개` },
+    { label: '투자 기간', value: card.periodMonths ? `${card.periodMonths}개월` : '-' },
   ];
 
   return (
@@ -34,7 +34,10 @@ export default function InvestCard({ card, onClick, extraMeta, investorMeta, end
         <div className="thumb-cat">{card.catLabel}</div>
         <div className={`thumb-status ${card.statusCls}`}>{card.status}</div>
         {!isClosed && card.investors && (
-          <div className="thumb-cnt"><span className="inv-dot" />{card.investors}</div>
+          <div className="thumb-cnt">
+            <span className="inv-dot" />
+            {card.investors} · {Math.round(card.pct * card.totalTokens / 100)}/{card.totalTokens} 토큰
+          </div>
         )}
         {isClosed && <div className="ended-overlay"><span className="ended-label">투자 종료</span></div>}
       </div>
@@ -42,7 +45,7 @@ export default function InvestCard({ card, onClick, extraMeta, investorMeta, end
         <div className="icard-name">{card.name}</div>
         <div className="icard-sub">{card.sub}</div>
         <div className="prog-head">
-          <span className="prog-pct">{card.pct}<sup>%</sup></span>
+          <span className="prog-pct">{card.pct}%</span>
           <span className={`prog-status ${card.pctLabelCls}`}>{card.pctLabel}</span>
         </div>
         <div className="prog-bg" style={{ marginBottom: 12 }}>

@@ -52,7 +52,7 @@ export default function HomePage() {
       {/* Featured STO Section */}
       <section className="home-featured">
         <div className="home-featured__header">
-          <h2 className="home-featured__title">주목할만한<br/>조각투자 상품</h2>
+          <h2 className="home-featured__title">주목할 만한<br/>조각투자 상품</h2>
           <button className="home-featured__more" onClick={() => navigate('/invest')}>모두 보기</button>
         </div>
 
@@ -94,8 +94,8 @@ export default function HomePage() {
                 <span className="meta-value meta-accent">{FEATURED_CARD.rate}</span>
               </div>
               <div className="home-featured__meta-item">
-                <span className="meta-label">발행 예정 토큰</span>
-                <span className="meta-value">{FEATURED_CARD.totalTokens}개</span>
+                <span className="meta-label">투자 기간</span>
+                <span className="meta-value">{FEATURED_CARD.periodMonths}개월</span>
               </div>
             </div>
           </div>
