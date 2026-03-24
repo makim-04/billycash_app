@@ -1,9 +1,20 @@
 import { useNavigate } from 'react-router-dom';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
+import InvestCard from '../components/InvestCard';
+import type { ProductStatus } from '../types/domain';
 
-const FEATURED_CARD = INVEST_CARDS.find(c => c.id === 7)!; // 강남 미소담 급식
-const SECONDARY_FNB = INVEST_CARDS.find(c => c.id === 1)!;  // 성수동 르쁘띠파리 (F&B)
-const SECONDARY_STAY = INVEST_CARDS.find(c => c.id === 3)!; // 제주 돌담스테이 (스테이)
+const STATUS_LABEL: Record<ProductStatus, string> = {
+  pending: '모집중',
+  ready: '모집완료',
+  live: '투자중',
+  expired: '만기 상환',
+  done: '완제됨',
+  delay: '연체',
+};
+
+const FEATURED_CARD = INVEST_CARDS.find(c => c.id === 7)!;
+const SECONDARY_FNB = INVEST_CARDS.find(c => c.id === 1)!;
+const SECONDARY_STAY = INVEST_CARDS.find(c => c.id === 3)!;
 
 const totalAsset = MOCK_PORTFOLIO.currentValue + MOCK_PORTFOLIO.totalDividends;
 const growthRate = ((MOCK_PORTFOLIO.currentValue - MOCK_PORTFOLIO.totalInvested) / MOCK_PORTFOLIO.totalInvested * 100).toFixed(1);
@@ -56,50 +67,7 @@ export default function HomePage() {
           <button className="home-featured__more" onClick={() => navigate('/invest')}>모두 보기</button>
         </div>
 
-        {/* Main Featured Card */}
-        <div className="home-featured__card" onClick={() => navigate(`/invest/${FEATURED_CARD.id}`)}>
-          <div className="home-featured__thumb">
-            {FEATURED_CARD.img && (
-              <img src={FEATURED_CARD.img} alt={FEATURED_CARD.name} className="home-featured__thumb-img" />
-            )}
-            <div className="home-featured__thumb-overlay" />
-            <span className="home-featured__thumb-cat">{FEATURED_CARD.catLabel}</span>
-            <span className="home-featured__thumb-status">{FEATURED_CARD.status}</span>
-            <div className="home-featured__thumb-info">
-              <span className="home-featured__thumb-dot" />
-              <span>{FEATURED_CARD.investors} · {FEATURED_CARD.pct * FEATURED_CARD.totalTokens / 100}/{FEATURED_CARD.totalTokens} 토큰</span>
-            </div>
-          </div>
-          <div className="home-featured__body">
-            <div className="home-featured__body-title">
-              <p className="home-featured__name">{FEATURED_CARD.name}</p>
-              <p className="home-featured__sub">{FEATURED_CARD.sub}</p>
-            </div>
-            <div className="home-featured__progress">
-              <div className="home-featured__prog-head">
-                <span className="home-featured__pct">{FEATURED_CARD.pct}%</span>
-                <span className="home-featured__pct-label">신규 오픈</span>
-              </div>
-              <div className="prog-bg">
-                <div className="prog-bar-green" style={{ width: `${FEATURED_CARD.pct}%`, height: 5, borderRadius: 3 }} />
-              </div>
-            </div>
-            <div className="home-featured__meta">
-              <div className="home-featured__meta-item">
-                <span className="meta-label">최소 투자</span>
-                <span className="meta-value">{FEATURED_CARD.minInvest?.replace('₩', '') || '50,000원'}</span>
-              </div>
-              <div className="home-featured__meta-item">
-                <span className="meta-label">예상 수익률</span>
-                <span className="meta-value meta-accent">{FEATURED_CARD.rate}</span>
-              </div>
-              <div className="home-featured__meta-item">
-                <span className="meta-label">투자 기간</span>
-                <span className="meta-value">{FEATURED_CARD.periodMonths}개월</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <InvestCard card={FEATURED_CARD} onClick={() => navigate(`/invest/${FEATURED_CARD.id}`)} />
 
         {/* Small Secondary Cards */}
         <div className="home-secondary">
@@ -109,7 +77,7 @@ export default function HomePage() {
             </div>
             <div className="home-secondary__text">
               <p className="home-secondary__name">{SECONDARY_FNB.name}</p>
-              <p className="home-secondary__info">{SECONDARY_FNB.status} • {SECONDARY_FNB.rate}</p>
+              <p className="home-secondary__info">{STATUS_LABEL[SECONDARY_FNB.productStatus]} • {SECONDARY_FNB.rate}</p>
             </div>
           </div>
           <div className="home-secondary__card" onClick={() => navigate(`/invest/${SECONDARY_STAY.id}`)}>
@@ -118,7 +86,7 @@ export default function HomePage() {
             </div>
             <div className="home-secondary__text">
               <p className="home-secondary__name">{SECONDARY_STAY.name}</p>
-              <p className="home-secondary__info">{SECONDARY_STAY.status} • {SECONDARY_STAY.rate}</p>
+              <p className="home-secondary__info">{STATUS_LABEL[SECONDARY_STAY.productStatus]} • {SECONDARY_STAY.rate}</p>
             </div>
           </div>
         </div>

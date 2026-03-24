@@ -46,8 +46,8 @@ export default function MyPage() {
   const changeRate = totalInvested > 0 ? (changeAmount / totalInvested * 100).toFixed(1) : '0.0';
   const isUp = changeAmount >= 0;
 
-  // 토큰 발행 상품
-  const issuedHoldings = activeHoldings.filter(h => h.phase === '토큰 발행');
+  // 투자중 상품
+  const issuedHoldings = activeHoldings.filter(h => h.phase === '투자중');
   // 누적 수익률
   const cumulativeROI = totalInvested > 0 ? ((totalCurrentValue + p.totalDividends - totalInvested) / totalInvested * 100).toFixed(1) : '0.0';
 
@@ -154,7 +154,7 @@ export default function MyPage() {
                     <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
                   </svg>
                 </div>
-                <span className="mypage-bento__phase-tag">토큰 발행</span>
+                <span className="mypage-bento__phase-tag">투자중</span>
               </div>
               <div className="mypage-bento__large-bottom">
                 <div className="mypage-bento__large-label">{card.name}</div>
@@ -335,10 +335,10 @@ export default function MyPage() {
             <div className="holdings-sheet__handle" />
             <h3 className="holdings-sheet__title">내 투자 상품</h3>
             <div className="holdings-sheet__list">
-              {[...activeHoldings].sort((a, b) => (b.phase === '토큰 발행' ? 1 : 0) - (a.phase === '토큰 발행' ? 1 : 0)).map(h => {
+              {[...activeHoldings].sort((a, b) => (b.phase === '투자중' ? 1 : 0) - (a.phase === '투자중' ? 1 : 0)).map(h => {
                 const card = INVEST_CARDS.find(c => c.id === h.investCardId);
                 if (!card) return null;
-                const isIssued = h.phase === '토큰 발행';
+                const isIssued = h.phase === '투자중';
                 const profit = isIssued ? h.currentValue - h.purchasePrice : 0;
                 const profitRate = isIssued && h.purchasePrice > 0 ? (profit / h.purchasePrice * 100).toFixed(1) : '0.0';
                 return (

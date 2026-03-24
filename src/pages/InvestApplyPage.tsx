@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
 
-type View = 'input' | 'done';
+type View = 'input' | 'confirm' | 'done';
 
 export default function InvestApplyPage() {
   const { id } = useParams();
@@ -13,9 +13,10 @@ export default function InvestApplyPage() {
   const [amountStr, setAmountStr] = useState('');
   const [tokenStr, setTokenStr] = useState('');
   const [lastEdited, setLastEdited] = useState<'amount' | 'token'>('amount');
-  const [showConfirm, setShowConfirm] = useState(false);
   const [showRiskModal, setShowRiskModal] = useState(false);
+  const [riskRead, setRiskRead] = useState(false);
   const [agreeRisk, setAgreeRisk] = useState(false);
+  const [riskWarning, setRiskWarning] = useState('');
 
   if (!card) {
     return (
@@ -26,10 +27,9 @@ export default function InvestApplyPage() {
     );
   }
 
-  const tokenPrice = 15000;
+  const tokenPrice = parseInt(card.minInvest.replace(/[^\d]/g, ''));
   const rateNum = parseFloat(card.rate.replace(/[^\d.]/g, ''));
   const balance = MOCK_PORTFOLIO.tokenBalance;
-  const minInvest = parseInt(card.minInvest.replace(/[^\d]/g, ''));
 
   const amount = lastEdited === 'amount'
     ? (parseInt(amountStr.replace(/,/g, '')) || 0)
@@ -38,7 +38,7 @@ export default function InvestApplyPage() {
     ? (parseInt(tokenStr) || 0)
     : Math.floor((parseInt(amountStr.replace(/,/g, '')) || 0) / tokenPrice);
   const monthlyReturn = Math.round(amount * rateNum / 100);
-  const isValid = amount >= minInvest && amount <= balance * 1000 && tokens > 0;
+  const isValid = tokens > 0 && amount <= balance * 1000;
 
   const handleAmountChange = (val: string) => {
     const num = val.replace(/[^\d]/g, '');
@@ -56,12 +56,20 @@ export default function InvestApplyPage() {
 
   const handleBuy = () => {
     if (!isValid) return;
-    setShowConfirm(true);
+    setView('confirm');
   };
 
   const handleExecute = () => {
-    if (!agreeRisk) return;
-    setShowConfirm(false);
+    if (!agreeRisk) {
+      setRiskWarning('투자 위험 고지에 동의해 주세요.');
+      return;
+    }
+    if (!riskRead) {
+      setRiskWarning('투자 위험 고지를 먼저 확인해 주세요.');
+      setAgreeRisk(false);
+      return;
+    }
+    setRiskWarning('');
     setView('done');
   };
 
@@ -80,16 +88,21 @@ export default function InvestApplyPage() {
           </div>
 
           <div className="trade-content">
-            {/* 상품 히어로 */}
-            <div className="trade-hero">
-              <div className="trade-hero__top">
-                <div className="trade-hero__left">
-                  <div className="trade-hero__name">{card.name}</div>
-                  <div className="trade-hero__sub">{card.sub}</div>
+            {/* 상품 정보 카드 */}
+            <div className="trade-product">
+              <div className="trade-product__info">
+                <div className="trade-product__name">{card.name}</div>
+                <div className="trade-product__sub">{card.sub}</div>
+              </div>
+              <div className="trade-product__stats">
+                <div className="trade-product__stat">
+                  <span className="trade-product__stat-value trade-product__stat-value--accent">{card.rate}</span>
+                  <span className="trade-product__stat-label">예상 수익률</span>
                 </div>
-                <div className="trade-hero__rate">
-                  <span className="trade-hero__rate-value">{card.rate}</span>
-                  <span className="trade-hero__rate-label">예상 수익률</span>
+                <div className="trade-product__divider" />
+                <div className="trade-product__stat">
+                  <span className="trade-product__stat-value">{tokenPrice.toLocaleString('ko-KR')}원</span>
+                  <span className="trade-product__stat-label">토큰 단가</span>
                 </div>
               </div>
             </div>
@@ -119,7 +132,6 @@ export default function InvestApplyPage() {
                       <polyline points="17 21 17 3" /><polyline points="13 7 17 3 21 7" />
                     </svg>
                   </div>
-                  <span className="trade-input-swap__price">1토큰 = ₩{tokenPrice.toLocaleString('ko-KR')}</span>
                   <div className="trade-input-swap__line" />
                 </div>
 
@@ -144,11 +156,11 @@ export default function InvestApplyPage() {
             <div className="trade-estimate">
               <div className="trade-estimate__row">
                 <span>예상 월 배당</span>
-                <span className="trade-estimate__value">₩{monthlyReturn.toLocaleString('ko-KR')}</span>
+                <span className="trade-estimate__value">{monthlyReturn.toLocaleString('ko-KR')}원</span>
               </div>
               <div className="trade-estimate__row">
                 <span>예상 연 수익</span>
-                <span className="trade-estimate__value">₩{(monthlyReturn * 12).toLocaleString('ko-KR')}</span>
+                <span className="trade-estimate__value">{(monthlyReturn * 12).toLocaleString('ko-KR')}원</span>
               </div>
             </div>
 
@@ -160,7 +172,7 @@ export default function InvestApplyPage() {
             )}
           </div>
 
-          {/* 매수 버튼 */}
+          {/* 신청 버튼 */}
           <div className="trade-footer">
             <button
               className="btn-primary"
@@ -168,46 +180,66 @@ export default function InvestApplyPage() {
               disabled={!isValid}
               onClick={handleBuy}
             >
-              매수하기
+              신청하기
             </button>
           </div>
 
-          {/* 확인 바텀시트 */}
-          {showConfirm && (
-            <div className="trade-confirm-overlay" onClick={() => setShowConfirm(false)}>
-              <div className="trade-confirm" onClick={e => e.stopPropagation()}>
-                <div className="trade-confirm__handle" />
-                <h3 className="trade-confirm__title">주문 확인</h3>
-                <div className="trade-confirm__product">{card.emoji} {card.name}</div>
-                <div className="trade-confirm__summary">
-                  <div className="trade-confirm__row">
-                    <span>수량</span><span>{tokens} 토큰</span>
-                  </div>
-                  <div className="trade-confirm__row">
-                    <span>금액</span><span>₩{amount.toLocaleString('ko-KR')}</span>
-                  </div>
-                  <div className="trade-confirm__row">
-                    <span>예상 월 배당</span><span>₩{monthlyReturn.toLocaleString('ko-KR')}</span>
-                  </div>
-                </div>
-                <div className="agree-row" style={{ marginBottom: 16 }}>
-                  <label className="auth-checkbox" style={{ marginTop: 0 }}>
-                    <input type="checkbox" checked={agreeRisk} onChange={e => setAgreeRisk(e.target.checked)} />
-                    <span>투자 위험 고지를 확인했습니다</span>
-                  </label>
-                  <button type="button" className="agree-view" onClick={() => setShowRiskModal(true)}>보기</button>
-                </div>
-                <button
-                  className="btn-primary"
-                  style={{ width: '100%', justifyContent: 'center' }}
-                  disabled={!agreeRisk}
-                  onClick={handleExecute}
-                >
-                  주문 실행하기
-                </button>
+        </>
+      )}
+
+      {view === 'confirm' && (
+        <>
+          <div className="subpage-topbar">
+            <button className="subpage-topbar__back" onClick={() => setView('input')}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <span className="subpage-topbar__title">신청 확인</span>
+            <div style={{ width: 32 }} />
+          </div>
+
+          <div className="trade-content">
+            <div className="trade-confirm-page__product">{card.name}</div>
+            <div className="trade-confirm-page__sub">{card.sub}</div>
+
+            <div className="trade-confirm-page__summary">
+              <div className="trade-confirm__row">
+                <span>수량</span><span>{tokens} 토큰</span>
+              </div>
+              <div className="trade-confirm__row">
+                <span>금액</span><span>{amount.toLocaleString('ko-KR')}원</span>
+              </div>
+              <div className="trade-confirm__row">
+                <span>토큰 단가</span><span>{tokenPrice.toLocaleString('ko-KR')}원</span>
+              </div>
+              <div className="trade-confirm__row">
+                <span>예상 월 배당</span><span>{monthlyReturn.toLocaleString('ko-KR')}원</span>
+              </div>
+              <div className="trade-confirm__row">
+                <span>예상 연 수익</span><span>{(monthlyReturn * 12).toLocaleString('ko-KR')}원</span>
               </div>
             </div>
-          )}
+
+            <div className="agree-row" style={{ marginBottom: riskWarning ? 8 : 16 }}>
+              <label className="auth-checkbox" style={{ marginTop: 0 }}>
+                <input type="checkbox" checked={agreeRisk} onChange={e => { setAgreeRisk(e.target.checked); setRiskWarning(''); }} />
+                <span>투자 위험 고지를 확인했습니다</span>
+              </label>
+              <button type="button" className="agree-view" onClick={() => setShowRiskModal(true)}>보기</button>
+            </div>
+            {riskWarning && <div className="trade-risk-warning">{riskWarning}</div>}
+          </div>
+
+          <div className="trade-footer">
+            <button
+              className="btn-primary"
+              style={{ width: '100%', justifyContent: 'center' }}
+              onClick={handleExecute}
+            >
+              신청하기
+            </button>
+          </div>
 
           {/* 투자 위험 고지 모달 */}
           {showRiskModal && (
@@ -229,7 +261,7 @@ export default function InvestApplyPage() {
                   <p>5. 법규 변경 위험</p>
                   <p>STO 관련 법률 및 규제 변경에 따라 서비스 운영 방식이 변경되거나 제한될 수 있습니다.</p>
                 </div>
-                <button className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 12 }} onClick={() => { setAgreeRisk(true); setShowRiskModal(false); }}>확인했습니다</button>
+                <button className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 12 }} onClick={() => { setRiskRead(true); setAgreeRisk(true); setRiskWarning(''); setShowRiskModal(false); }}>확인했습니다</button>
               </div>
             </div>
           )}
@@ -246,15 +278,15 @@ export default function InvestApplyPage() {
               <polyline points="6 12 10 16 18 8" />
             </svg>
           </div>
-          <h2 className="deposit-done__title">매수 완료!</h2>
+          <h2 className="deposit-done__title">신청 완료!</h2>
           <p className="deposit-done__amount">{card.name}</p>
-          <p className="deposit-done__desc">{tokens} 토큰 · ₩{amount.toLocaleString('ko-KR')}</p>
+          <p className="deposit-done__desc">{tokens} 토큰 · {amount.toLocaleString('ko-KR')}원</p>
           <div className="deposit-done__balance">
-            <span>배당 시작 예정</span>
-            <span>2026년 4월 5일</span>
+            <span>토큰 발행 예정일</span>
+            <span>{MOCK_PORTFOLIO.holdings.find(h => h.investCardId === card.id)?.expectedIssueDate?.replace(/-/g, '.') || '-'}</span>
           </div>
           <div className="deposit-done__actions">
-            <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => navigate('/my')}>
+            <button className="btn-primary" style={{ width: '100%', justifyContent: 'center' }} onClick={() => navigate(`/invest/${card.id}`)}>
               내 투자 보기
             </button>
             <button className="btn-outline" style={{ width: '100%', justifyContent: 'center', marginTop: 8 }} onClick={() => navigate('/')}>

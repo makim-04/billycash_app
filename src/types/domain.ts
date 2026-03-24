@@ -1,18 +1,16 @@
+export type ProductStatus = 'pending' | 'ready' | 'live' | 'expired' | 'done' | 'delay';
+
 export interface InvestCard {
   id: number;
   cat: string;
   emoji: string;
   catLabel: string;
   thumbCls: string;
-  statusCls: string;
-  status: string;
+  productStatus: ProductStatus;
   investors: string;
   name: string;
   sub: string;
   pct: number;
-  progCls: string;
-  pctLabel: string;
-  pctLabelCls: string;
   minInvest: string;
   rate: string;
   reward: string;
@@ -70,6 +68,11 @@ export interface User {
   kycLevel: number;
 }
 
+export interface MonthlyRecord {
+  month: string;   // e.g. '2026-01'
+  amount: number;
+}
+
 export interface TokenHolding {
   investCardId: number;
   tokenName: string;
@@ -82,9 +85,14 @@ export interface TokenHolding {
   monthlyYield: string;
   lastDividend: number;
   status: '찜' | '투자중' | '투자 종료';
-  phase?: '모집중' | '토큰 발행';
+  phase?: '모집중' | '투자중';
   periodMonths?: number;
   elapsedMonths?: number;
+  issuedDate?: string;
+  appliedDate?: string;
+  expectedIssueDate?: string;
+  dividendHistory?: MonthlyRecord[];
+  storeRevenue?: MonthlyRecord[];
 }
 
 export interface Transaction {
@@ -111,7 +119,8 @@ export interface Portfolio {
   totalInvested: number;
   currentValue: number;
   totalDividends: number;
-  tokenBalance: number;
+  tokenBalance: number;    // 토큰 잔액 (원화 환산)
+  cashBalance: number;     // 출금 가능 현금 (원)
   holdings: TokenHolding[];
   transactions: Transaction[];
   tokenTransactions: TokenTransaction[];
