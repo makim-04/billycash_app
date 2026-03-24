@@ -79,7 +79,10 @@ export default function MenuPage() {
   return (
     <div className="subpage">
       <div className="subpage-topbar">
-        <button className="subpage-topbar__back" onClick={() => view === 'settings' ? setView('menu') : navigate(-1)}>
+        <button className="subpage-topbar__back" onClick={() => {
+          if (view === 'settings') { setView('menu'); }
+          else { navigate(-1); }
+        }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
@@ -180,11 +183,11 @@ export default function MenuPage() {
         <div className="menu-content">
           <div className="settings-group">
             <div className="settings-group__title">계정</div>
-            <button className="settings-item" onClick={() => navigate('/account?from=settings')}>
+            <button className="settings-item" onClick={() => navigate('/account?from=settings', { replace: true })}>
               <span>계정 관리</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
-            <button className="settings-item" onClick={() => navigate('/pin-setup?from=settings')}>
+            <button className="settings-item" onClick={() => navigate('/pin-setup?from=settings', { replace: true })}>
               <span>간편 비밀번호 설정/변경</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
             </button>

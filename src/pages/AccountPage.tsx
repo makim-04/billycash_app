@@ -13,7 +13,7 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const goBack = () => searchParams.get('from') === 'settings' ? navigate('/menu?view=settings') : navigate(-1);
+  const goBack = () => searchParams.get('from') === 'settings' ? navigate('/menu?view=settings', { replace: true }) : navigate(-1);
 
   const info = user
     ? [

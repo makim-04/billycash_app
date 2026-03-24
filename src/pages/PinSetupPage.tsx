@@ -6,7 +6,7 @@ type Step = 'enter' | 'confirm' | 'done';
 export default function PinSetupPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const goBack = () => searchParams.get('from') === 'settings' ? navigate('/menu?view=settings') : navigate(-1);
+  const goBack = () => searchParams.get('from') === 'settings' ? navigate('/menu?view=settings', { replace: true }) : navigate(-1);
   const [step, setStep] = useState<Step>('enter');
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
