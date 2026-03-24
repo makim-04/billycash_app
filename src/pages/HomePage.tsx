@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
 import InvestCard from '../components/InvestCard';
@@ -21,13 +22,28 @@ const growthRate = ((MOCK_PORTFOLIO.currentValue - MOCK_PORTFOLIO.totalInvested)
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [showAssetTooltip, setShowAssetTooltip] = useState(false);
 
   return (
     <div className="home-v2">
       {/* Hero Portfolio Section */}
       <section className="home-portfolio">
         <div className="home-portfolio__top">
-          <div className="home-portfolio__label">총 투자 자산</div>
+          <div className="home-portfolio__label">
+            총 투자 자산
+            <span className="home-portfolio__tooltip-wrap">
+              <button className="home-portfolio__tooltip-trigger" onClick={() => setShowAssetTooltip(v => !v)}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </button>
+              {showAssetTooltip && (
+                <div className="home-portfolio__tooltip" onClick={() => setShowAssetTooltip(false)}>
+                  전체 자산 = 투자 평가액 + 모집중 + 만기 상환 + 현금
+                </div>
+              )}
+            </span>
+          </div>
           <div className="home-portfolio__actions">
             <button className="home-portfolio__icon" onClick={() => navigate('/search')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#231F20" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">

@@ -143,7 +143,10 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 /* ── Portfolio Hero ── */
 .home-portfolio{display:flex;flex-direction:column;gap:3.5px}
 .home-portfolio__top{display:flex;align-items:center;justify-content:space-between}
-.home-portfolio__label{font-size:var(--font-xs);font-weight:500;color:#6b7280;letter-spacing:.96px;text-transform:uppercase}
+.home-portfolio__label{font-size:var(--font-xs);font-weight:500;color:#6b7280;letter-spacing:.96px;text-transform:uppercase;display:flex;align-items:center;gap:4px}
+.home-portfolio__tooltip-wrap{position:relative;display:inline-flex}
+.home-portfolio__tooltip-trigger{background:none;border:none;color:#9CA3AF;cursor:pointer;display:flex;align-items:center;padding:0}
+.home-portfolio__tooltip{position:absolute;top:calc(100% + 8px);left:0;z-index:10;background:var(--black);color:var(--white);font-size:11px;font-weight:400;letter-spacing:0;text-transform:none;padding:10px 14px;border-radius:var(--r-sm);white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.2)}
 .home-portfolio__actions{display:flex;align-items:center;gap:4px}
 .home-portfolio__icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:none;cursor:pointer;border-radius:50%;transition:background var(--ease)}
 .home-portfolio__icon:active{background:var(--pale)}
