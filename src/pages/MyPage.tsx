@@ -4,7 +4,6 @@ import PageHeader from '../components/PageHeader';
 import { useAuth } from '../context/AuthContext';
 import { MOCK_PORTFOLIO, INVEST_CARDS } from '../data';
 
-const TX_FILTERS = ['전체', '투자', '매수', '만기', '입금', '출금'] as const;
 
 function formatKRW(n: number) {
   return n.toLocaleString('ko-KR') + '원';
@@ -18,8 +17,6 @@ export default function MyPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, isLoggedIn, logout } = useAuth();
-  const [txFilter, setTxFilter] = useState<string>('전체');
-  const [showHistory, setShowHistory] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const [showHoldings, setShowHoldings] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -62,7 +59,6 @@ export default function MyPage() {
 
   // 거래 내역 (날짜순 정렬)
   const allTx = [...p.transactions].sort((a, b) => b.date.localeCompare(a.date));
-  const filteredTx = txFilter === '전체' ? allTx : allTx.filter(t => t.type === txFilter);
 
   return (
     <div className="mypage-v2">
