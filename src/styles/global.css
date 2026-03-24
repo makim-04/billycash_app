@@ -144,8 +144,9 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 .home-portfolio{display:flex;flex-direction:column;gap:3.5px}
 .home-portfolio__top{display:flex;align-items:center;justify-content:space-between}
 .home-portfolio__label{font-size:var(--font-xs);font-weight:500;color:#6b7280;letter-spacing:.96px;text-transform:uppercase}
-.home-portfolio__menu{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:none;cursor:pointer;border-radius:50%;transition:background var(--ease)}
-.home-portfolio__menu:active{background:var(--pale)}
+.home-portfolio__actions{display:flex;align-items:center;gap:4px}
+.home-portfolio__icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:none;cursor:pointer;border-radius:50%;transition:background var(--ease)}
+.home-portfolio__icon:active{background:var(--pale)}
 .home-portfolio__amount{display:flex;align-items:baseline;gap:8px}
 .home-portfolio__num{font-size:var(--font-xl);font-weight:400;color:var(--black);letter-spacing:-.56px}
 .home-portfolio__unit{font-size:var(--font-md);font-weight:300;color:var(--black)}
@@ -201,12 +202,31 @@ button{font-family:var(--ff);cursor:pointer;border:none;background:none}
 .home-secondary__info{font-size:var(--font-xs);font-weight:300;color:#6b7280;letter-spacing:.96px;text-transform:uppercase}
 
 /* ── Insight Section ── */
-.home-insight{background:var(--white);border:1px solid rgba(229,231,235,.5);border-radius:24px;box-shadow:0 10px 40px rgba(35,31,32,.04);padding:26px}
-.home-insight__inner{display:flex;gap:16px;align-items:flex-start}
-.home-insight__content{flex:1;display:flex;flex-direction:column;gap:8px}
-.home-insight__title{font-size:var(--font-md);font-weight:400;color:var(--black);letter-spacing:-.4px}
-.home-insight__desc{font-size:var(--font-sm);font-weight:300;color:#6b7280;line-height:27.2px}
-.home-insight__icon-wrap{width:56px;height:56px;background:#FFCE30;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* home-insight hidden */
+
+/* 투자중 대시보드 */
+.home-live{padding:0 24px 24px}
+.home-live__header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.home-live__title{font-size:var(--font-sm);font-weight:600;color:var(--black)}
+.home-live__more{font-size:var(--font-xs);font-weight:500;color:var(--black);letter-spacing:.96px;text-transform:uppercase;border:none;background:none;border-bottom:2px solid #FFCE30;padding-bottom:4px;cursor:pointer;font-family:var(--ff)}
+.home-live__list{display:flex;flex-direction:column;background:var(--white);border-radius:var(--r-lg);box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
+.home-live__row{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--pale);cursor:pointer;transition:background var(--ease)}
+.home-live__row:last-child{border-bottom:none}
+.home-live__row:active{background:var(--pale)}
+.home-live__row-name{font-size:var(--font-sm);font-weight:400;color:var(--black)}
+.home-live__row-meta{font-size:11px;color:var(--light);margin-top:3px}
+.home-live__row-right{text-align:right}
+.home-live__row-rate{font-size:var(--font-sm);font-weight:600;letter-spacing:-.32px}
+.home-live__row-rate.up{color:var(--green)}
+.home-live__row-rate.down{color:var(--red)}
+.home-live__row-amount{font-size:11px;color:var(--light);margin-top:3px}
+
+/* 빠른 설정 */
+.home-quick{display:flex;gap:10px;padding:0 24px 32px}
+.home-quick__item{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 0;background:none;border:none;border-radius:var(--r-sm);cursor:pointer;font-family:var(--ff);transition:background var(--ease)}
+.home-quick__item:active{background:var(--pale)}
+.home-quick__item svg{width:16px;height:16px}
+.home-quick__item span{font-size:10px;font-weight:500;color:var(--light)}
 
 /* ── Product Card (앱용) ── */
 .icard{background:var(--white);border:1px solid rgba(229,231,235,.5);border-radius:24px;overflow:hidden;cursor:pointer;box-shadow:0 10px 40px rgba(35,31,32,.04);transition:border-color var(--ease)}

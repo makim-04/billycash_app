@@ -15,6 +15,7 @@ import MenuPage from './pages/MenuPage'
 import SearchPage from './pages/SearchPage'
 import PinSetupPage from './pages/PinSetupPage'
 import AccountPage from './pages/AccountPage'
+import AssetDetailPage from './pages/AssetDetailPage'
 
 function RequireAuth() {
   const { isLoggedIn } = useAuth();

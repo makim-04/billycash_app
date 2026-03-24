@@ -63,10 +63,8 @@ export default function MyPage() {
       <section className="mypage-hero">
         <div className="mypage-hero__profile">
           <div className="mypage-hero__greeting">
-            <span className="mypage-hero__label">반가워요,</span>
             <span className="mypage-hero__name">{user.name}님</span>
           </div>
-          <span className="mypage-hero__badge">VIP 등급</span>
         </div>
 
         <div className="mypage-asset-card">
