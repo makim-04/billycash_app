@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import InvestCard from '../components/InvestCard';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
@@ -28,9 +28,15 @@ const myInvestedIds = new Set(holdingMap.keys());
 
 export default function InvestPage() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<'all' | 'my'>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState<'all' | 'my'>(searchParams.get('tab') === 'my' ? 'my' : 'all');
   const [catFilter, setCatFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState<ProductStatus | 'all'>('all');
+
+  const handleTabChange = (newTab: 'all' | 'my') => {
+    setTab(newTab);
+    setSearchParams(newTab === 'my' ? { tab: 'my' } : {}, { replace: true });
+  };
 
   const publicCards = INVEST_CARDS.filter(c => c.productStatus === 'pending' || c.productStatus === 'ready');
   const allFiltered = catFilter === "all"
@@ -59,10 +65,10 @@ export default function InvestPage() {
 
       {/* 탭 스위처 */}
       <div className="invest-tab-bar">
-        <button className={`invest-tab ${tab === 'all' ? 'active' : ''}`} onClick={() => setTab('all')}>
+        <button className={`invest-tab ${tab === 'all' ? 'active' : ''}`} onClick={() => handleTabChange('all')}>
           모집중 상품
         </button>
-        <button className={`invest-tab ${tab === 'my' ? 'active' : ''}`} onClick={() => setTab('my')}>
+        <button className={`invest-tab ${tab === 'my' ? 'active' : ''}`} onClick={() => handleTabChange('my')}>
           내 투자
           {myCards.length > 0 && <span className="invest-tab__count">{myCards.length}</span>}
         </button>
