@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
-import type { ProductStatus, TokenHolding, MonthlyRecord } from '../types/domain';
+import type { ProductStatus, TokenHolding } from '../types/domain';
 
 const STATUS_LABEL: Record<ProductStatus, string> = {
   pending: '모집중', ready: '모집완료', live: '투자중',
@@ -284,7 +284,8 @@ function ExpiredSummary({ holding }: { holding: TokenHolding }) {
 
 function ExpiredTimeline({ holding }: { holding: TokenHolding }) {
   const issued = holding.issuedDate?.replace(/-/g, '.') || '-';
-  const total = holding.periodMonths || 12;
+  const _total = holding.periodMonths || 12;
+  void _total;
   // 만기일 계산 (issuedDate + periodMonths)
   let maturityLabel = '-';
   if (holding.issuedDate && holding.periodMonths) {

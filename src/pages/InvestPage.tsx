@@ -5,15 +5,6 @@ import InvestCard from '../components/InvestCard';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
 import type { ProductStatus } from '../types/domain';
 
-const STATUS_LABEL: Record<ProductStatus, string> = {
-  pending: '모집중',
-  ready: '모집완료',
-  live: '투자중',
-  expired: '만기 상환',
-  done: '완제됨',
-  delay: '연체',
-};
-
 const CATS = [
   { key: "all", label: "전체" },
   { key: "meal", label: "급식" },
