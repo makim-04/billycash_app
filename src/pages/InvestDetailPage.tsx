@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
-import type { ProductStatus, TokenHolding, MonthlyRecord } from '../types/domain';
+import type { ProductStatus, TokenHolding } from '../types/domain';
 
 const STATUS_LABEL: Record<ProductStatus, string> = {
   pending: '모집중', ready: '모집완료', live: '투자중',
@@ -284,7 +284,8 @@ function ExpiredSummary({ holding }: { holding: TokenHolding }) {
 
 function ExpiredTimeline({ holding }: { holding: TokenHolding }) {
   const issued = holding.issuedDate?.replace(/-/g, '.') || '-';
-  const total = holding.periodMonths || 12;
+  const _total = holding.periodMonths || 12;
+  void _total;
   // 만기일 계산 (issuedDate + periodMonths)
   let maturityLabel = '-';
   if (holding.issuedDate && holding.periodMonths) {
@@ -455,25 +456,24 @@ export default function InvestDetailPage() {
                     .filter(t => t.storeName === holding.storeName && t.type === '투자')
                     .sort((a, b) => b.date.localeCompare(a.date));
                   if (txns.length === 0) return null;
-                  const activeTxns = txns.filter(t => !cancelledIds.has(t.id));
-                  if (activeTxns.length === 0) return (
-                    <div className="pending-my__txns">
-                      <div className="pending-my__txns-title">신청 내역</div>
-                      <div className="pending-my__txn-empty">모든 신청이 취소되었습니다.</div>
-                    </div>
-                  );
                   return (
                     <div className="pending-my__txns">
                       <div className="pending-my__txns-title">신청 내역</div>
-                      {activeTxns.map(t => (
-                        <div className="pending-my__txn-row" key={t.id}>
-                          <div className="pending-my__txn-info">
-                            <span className="pending-my__txn-date">{t.date.replace(/-/g, '.')}</span>
-                            <span className="pending-my__txn-detail">{t.tokenCount}토큰 · {krw(t.amount)}원</span>
+                      {txns.map(t => {
+                        const isCancelled = cancelledIds.has(t.id);
+                        return (
+                          <div className={`pending-my__txn-row ${isCancelled ? 'cancelled' : ''}`} key={t.id}>
+                            <div className="pending-my__txn-info">
+                              <span className="pending-my__txn-date">{t.date.replace(/-/g, '.')}</span>
+                              <span className="pending-my__txn-detail">{t.tokenCount}토큰 · {krw(t.amount)}원</span>
+                            </div>
+                            {isCancelled
+                              ? <span className="pending-my__txn-cancelled-label">신청 취소</span>
+                              : editMode && <button className="pending-my__txn-cancel" onClick={() => setCancelTarget(t.id)}>신청 취소</button>
+                            }
                           </div>
-                          {editMode && <button className="pending-my__txn-cancel" onClick={() => setCancelTarget(t.id)}>신청 취소</button>}
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   );
                 })()}

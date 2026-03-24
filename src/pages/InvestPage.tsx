@@ -1,18 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageHeader from '../components/PageHeader';
 import InvestCard from '../components/InvestCard';
 import { INVEST_CARDS, MOCK_PORTFOLIO } from '../data';
 import type { ProductStatus } from '../types/domain';
-
-const STATUS_LABEL: Record<ProductStatus, string> = {
-  pending: '모집중',
-  ready: '모집완료',
-  live: '투자중',
-  expired: '만기 상환',
-  done: '완제됨',
-  delay: '연체',
-};
 
 const CATS = [
   { key: "all", label: "전체" },
@@ -37,9 +28,15 @@ const myInvestedIds = new Set(holdingMap.keys());
 
 export default function InvestPage() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState<'all' | 'my'>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState<'all' | 'my'>(searchParams.get('tab') === 'my' ? 'my' : 'all');
   const [catFilter, setCatFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState<ProductStatus | 'all'>('all');
+
+  const handleTabChange = (newTab: 'all' | 'my') => {
+    setTab(newTab);
+    setSearchParams(newTab === 'my' ? { tab: 'my' } : {}, { replace: true });
+  };
 
   const publicCards = INVEST_CARDS.filter(c => c.productStatus === 'pending' || c.productStatus === 'ready');
   const allFiltered = catFilter === "all"
@@ -56,7 +53,6 @@ export default function InvestPage() {
   const cards = tab === 'all' ? allFiltered : myFiltered;
 
   const p = MOCK_PORTFOLIO;
-  // 투자중(live/delay) 상품의 토큰 평가액 합계
   const activeCards = new Set(INVEST_CARDS.filter(c => ['live', 'delay'].includes(c.productStatus)).map(c => c.id));
   const activeHoldings = p.holdings.filter(h => activeCards.has(h.investCardId));
   const tokenValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
@@ -69,10 +65,10 @@ export default function InvestPage() {
 
       {/* 탭 스위처 */}
       <div className="invest-tab-bar">
-        <button className={`invest-tab ${tab === 'all' ? 'active' : ''}`} onClick={() => setTab('all')}>
-          전체 상품
+        <button className={`invest-tab ${tab === 'all' ? 'active' : ''}`} onClick={() => handleTabChange('all')}>
+          모집중 상품
         </button>
-        <button className={`invest-tab ${tab === 'my' ? 'active' : ''}`} onClick={() => setTab('my')}>
+        <button className={`invest-tab ${tab === 'my' ? 'active' : ''}`} onClick={() => handleTabChange('my')}>
           내 투자
           {myCards.length > 0 && <span className="invest-tab__count">{myCards.length}</span>}
         </button>

@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 type Step = 'enter' | 'confirm' | 'done';
 
 export default function PinSetupPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const goBack = () => searchParams.get('from') === 'settings' ? navigate('/menu?view=settings') : navigate(-1);
   const [step, setStep] = useState<Step>('enter');
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
@@ -68,7 +70,7 @@ export default function PinSetupPage() {
           </div>
           <h2 className="pin-done__title">간편 비밀번호가 설정되었습니다</h2>
           <p className="pin-done__desc">다음 로그인 시 간편 비밀번호로 접속할 수 있습니다.</p>
-          <button className="btn-primary pin-done__btn" onClick={() => navigate(-1)}>
+          <button className="btn-primary pin-done__btn" onClick={goBack}>
             확인
           </button>
         </div>
@@ -79,7 +81,7 @@ export default function PinSetupPage() {
   return (
     <div className="subpage">
       <div className="subpage-topbar">
-        <button className="subpage-topbar__back" onClick={() => step === 'confirm' ? (setStep('enter'), setPin(''), setConfirmPin(''), setError('')) : navigate(-1)}>
+        <button className="subpage-topbar__back" onClick={() => step === 'confirm' ? (setStep('enter'), setPin(''), setConfirmPin(''), setError('')) : goBack()}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>

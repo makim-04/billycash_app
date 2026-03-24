@@ -15,6 +15,9 @@ import MenuPage from './pages/MenuPage'
 import SearchPage from './pages/SearchPage'
 import PinSetupPage from './pages/PinSetupPage'
 import AccountPage from './pages/AccountPage'
+import AssetDetailPage from './pages/AssetDetailPage'
+import TxHistoryPage from './pages/TxHistoryPage'
+import HoldingsListPage from './pages/HoldingsListPage'
 
 function RequireAuth() {
   const { isLoggedIn } = useAuth();
@@ -45,6 +48,9 @@ export default function App() {
             <Route path="/search" element={<SearchPage />} />
             <Route path="/pin-setup" element={<PinSetupPage />} />
             <Route path="/account" element={<AccountPage />} />
+            <Route path="/asset" element={<AssetDetailPage />} />
+            <Route path="/tx-history" element={<TxHistoryPage />} />
+            <Route path="/holdings" element={<HoldingsListPage />} />
           </Route>
         </Route>
       </Routes>

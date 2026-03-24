@@ -29,7 +29,7 @@ export default function InvestApplyPage() {
 
   const tokenPrice = parseInt(card.minInvest.replace(/[^\d]/g, ''));
   const rateNum = parseFloat(card.rate.replace(/[^\d.]/g, ''));
-  const balance = MOCK_PORTFOLIO.tokenBalance;
+  const balance = MOCK_PORTFOLIO.cashBalance;
 
   const amount = lastEdited === 'amount'
     ? (parseInt(amountStr.replace(/,/g, '')) || 0)
@@ -84,7 +84,7 @@ export default function InvestApplyPage() {
               </svg>
             </button>
             <span className="subpage-topbar__title">투자 신청</span>
-            <span className="trade-balance">{balance.toLocaleString('ko-KR')}T</span>
+            <div style={{ width: 32 }} />
           </div>
 
           <div className="trade-content">
@@ -105,6 +105,11 @@ export default function InvestApplyPage() {
                   <span className="trade-product__stat-label">토큰 단가</span>
                 </div>
               </div>
+            </div>
+
+            <div className="trade-balance-info">
+              <span className="trade-balance-info__label">내 보유 잔액</span>
+              <span className="trade-balance-info__value">{balance.toLocaleString('ko-KR')}원</span>
             </div>
 
             {/* 주문 입력 */}

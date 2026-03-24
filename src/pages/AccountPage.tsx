@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ACCOUNT_INFO = [
@@ -11,7 +11,9 @@ const ACCOUNT_INFO = [
 
 export default function AccountPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const goBack = () => searchParams.get('from') === 'settings' ? navigate('/menu?view=settings') : navigate(-1);
 
   const info = user
     ? [
@@ -26,7 +28,7 @@ export default function AccountPage() {
   return (
     <div className="subpage">
       <div className="subpage-topbar">
-        <button className="subpage-topbar__back" onClick={() => navigate(-1)}>
+        <button className="subpage-topbar__back" onClick={goBack}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>

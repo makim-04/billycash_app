@@ -35,7 +35,7 @@ function buildMeta(card: InvestCardType, holding?: TokenHolding): ExtraMeta[] {
     ];
   }
   return [
-    { label: '최소 투자', value: card.minInvest },
+    { label: '최소 투자', value: `${card.minInvest.replace('₩', '')}원` },
     { label: '예상 수익률', value: card.rate, accent: true },
     { label: '투자 기간', value: card.periodMonths ? `${card.periodMonths}개월` : '-' },
   ];
