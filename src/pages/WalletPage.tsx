@@ -21,7 +21,7 @@ export default function WalletPage() {
   const [pin, setPin] = useState('');
   const [pinError, setPinError] = useState('');
 
-  const balance = MOCK_PORTFOLIO.tokenBalance;
+  const balance = MOCK_PORTFOLIO.cashBalance;
   const accountNo = '110-490-123456';
   const bankName = '하나은행';
 

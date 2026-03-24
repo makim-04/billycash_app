@@ -11,7 +11,7 @@ export default function WithdrawPage() {
   const [step, setStep] = useState<Step>('input');
   const [amount, setAmount] = useState(0);
 
-  const balance = MOCK_PORTFOLIO.tokenBalance;
+  const balance = MOCK_PORTFOLIO.cashBalance;
   const maxKRW = balance * 1000;
 
   const addAmount = (v: number) => setAmount(prev => Math.min(prev + v, maxKRW));

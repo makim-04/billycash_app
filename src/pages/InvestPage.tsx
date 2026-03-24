@@ -47,7 +47,6 @@ export default function InvestPage() {
   const cards = tab === 'all' ? allFiltered : myFiltered;
 
   const p = MOCK_PORTFOLIO;
-  // 투자중(live/delay) 상품의 토큰 평가액 합계
   const activeCards = new Set(INVEST_CARDS.filter(c => ['live', 'delay'].includes(c.productStatus)).map(c => c.id));
   const activeHoldings = p.holdings.filter(h => activeCards.has(h.investCardId));
   const tokenValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
@@ -61,7 +60,7 @@ export default function InvestPage() {
       {/* 탭 스위처 */}
       <div className="invest-tab-bar">
         <button className={`invest-tab ${tab === 'all' ? 'active' : ''}`} onClick={() => setTab('all')}>
-          전체 상품
+          모집중 상품
         </button>
         <button className={`invest-tab ${tab === 'my' ? 'active' : ''}`} onClick={() => setTab('my')}>
           내 투자

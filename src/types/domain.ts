@@ -119,7 +119,6 @@ export interface Portfolio {
   totalInvested: number;
   currentValue: number;
   totalDividends: number;
-  tokenBalance: number;    // 토큰 잔액 (원화 환산)
   cashBalance: number;     // 출금 가능 현금 (원)
   holdings: TokenHolding[];
   transactions: Transaction[];

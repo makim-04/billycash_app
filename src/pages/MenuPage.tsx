@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 type View = 'menu' | 'settings';
@@ -19,20 +19,16 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: '투자 상품',
     children: [
-      { label: '전체', to: '/invest' },
-      { label: '급식', to: '/invest?cat=meal' },
-      { label: 'F&B', to: '/invest?cat=fnb' },
-      { label: '카페', to: '/invest?cat=cafe' },
-      { label: '스테이', to: '/invest?cat=stay' },
-      { label: '공유주방', to: '/invest?cat=kitchen' },
+      { label: '모집중 상품', to: '/invest' },
+      { label: '내 투자', to: '/invest?tab=my' },
     ],
   },
   {
     label: '자산',
     children: [
+      { label: '자산 상세', to: '/asset' },
       { label: '입출금', to: '/wallet' },
-      { label: '투자 요약', to: '/my' },
-      { label: '토큰 현황', to: '/my' },
+      { label: '투자 내역', to: '/tx-history' },
     ],
   },
   {
@@ -45,17 +41,17 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: '마이페이지',
     children: [
-      { label: '내 투자 상품', to: '/my' },
-      { label: '투자 내역', to: '/my' },
-      { label: '계정 정보', to: '/my' },
+      { label: '포트폴리오', to: '/my' },
+      { label: '계정 관리', to: '/account' },
     ],
   },
 ];
 
 export default function MenuPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, logout } = useAuth();
-  const [view, setView] = useState<View>('menu');
+  const [view, setView] = useState<View>(searchParams.get('view') === 'settings' ? 'settings' : 'menu');
   const [search, setSearch] = useState('');
   const [autoLogin, setAutoLogin] = useState(() => localStorage.getItem('billycash_app_auto_login') === 'true');
   const [notiOn, setNotiOn] = useState(true);
@@ -112,11 +108,8 @@ export default function MenuPage() {
               <div className="menu-profile__name">{user?.name}님</div>
               <div className="menu-profile__email">{user?.email}</div>
             </div>
-            <button className="menu-profile__my" onClick={() => navigate('/my')}>
-              My 투자
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
+            <button className="menu-profile__logout" onClick={() => setShowLogoutConfirm(true)}>
+              로그아웃
             </button>
           </div>
 
@@ -161,9 +154,6 @@ export default function MenuPage() {
             )}
           </div>
 
-          {/* 로그아웃 */}
-          <button className="menu-logout" onClick={() => setShowLogoutConfirm(true)}>로그아웃</button>
-
           {/* 로그아웃 확인 팝업 */}
           {showLogoutConfirm && (
             <div className="confirm-overlay" onClick={() => setShowLogoutConfirm(false)}>
@@ -190,11 +180,11 @@ export default function MenuPage() {
         <div className="menu-content">
           <div className="settings-group">
             <div className="settings-group__title">계정</div>
-            <button className="settings-item" onClick={() => navigate('/account')}>
+            <button className="settings-item" onClick={() => navigate('/account?from=settings')}>
               <span>계정 관리</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
             </button>
-            <button className="settings-item" onClick={() => navigate('/pin-setup')}>
+            <button className="settings-item" onClick={() => navigate('/pin-setup?from=settings')}>
               <span>간편 비밀번호 설정/변경</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
             </button>

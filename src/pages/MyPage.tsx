@@ -23,6 +23,7 @@ export default function MyPage() {
   const [showLogout, setShowLogout] = useState(false);
   const [showHoldings, setShowHoldings] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [portfolioView, setPortfolioView] = useState<'none' | 'holdings' | 'roi' | 'live' | 'delay'>('none');
 
   useEffect(() => {
     if (!isLoggedIn) navigate('/login', { replace: true });
@@ -41,13 +42,21 @@ export default function MyPage() {
   const activeHoldings = p.holdings.filter(h => h.status === '투자중');
   const totalInvested = activeHoldings.reduce((s, h) => s + h.purchasePrice, 0);
   const totalCurrentValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
-  const totalAsset = totalCurrentValue + p.totalDividends + p.tokenBalance;
+  const totalAsset = totalCurrentValue + p.cashBalance;
   const changeAmount = totalCurrentValue - totalInvested;
   const changeRate = totalInvested > 0 ? (changeAmount / totalInvested * 100).toFixed(1) : '0.0';
   const isUp = changeAmount >= 0;
 
   // 투자중 상품
   const issuedHoldings = activeHoldings.filter(h => h.phase === '투자중');
+  const liveHoldings = issuedHoldings.filter(h => {
+    const card = INVEST_CARDS.find(c => c.id === h.investCardId);
+    return card && card.productStatus === 'live';
+  });
+  const delayHoldings = issuedHoldings.filter(h => {
+    const card = INVEST_CARDS.find(c => c.id === h.investCardId);
+    return card && card.productStatus === 'delay';
+  });
   // 누적 수익률
   const cumulativeROI = totalInvested > 0 ? ((totalCurrentValue + p.totalDividends - totalInvested) / totalInvested * 100).toFixed(1) : '0.0';
 
@@ -57,7 +66,7 @@ export default function MyPage() {
 
   return (
     <div className="mypage-v2">
-      <PageHeader title="MY" />
+      <PageHeader title="MY" showWallet={false} showSearch={true} />
 
       {/* Profile & Asset Hero */}
       <section className="mypage-hero">
@@ -79,7 +88,7 @@ export default function MyPage() {
               </button>
               {showTooltip && (
                 <div className="mypage-tooltip" onClick={() => setShowTooltip(false)}>
-                  총 자산 = 평가 금액 + 누적 배당 + 예수금 잔액
+                  총 자산 = 투자 원금 + 배당금 + 현금
                 </div>
               )}
             </span>
@@ -90,37 +99,10 @@ export default function MyPage() {
             <span className={isUp ? 'up' : 'down'}>({isUp ? '+' : ''}{changeRate}%)</span>
             <span className="mypage-asset-card__vs">전월 대비</span>
           </div>
-          <div className="mypage-asset-card__summary">
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">총 입금</span>
-              <span className="mypage-asset-card__summary-value">{allTx.filter(t => t.type === '입금').reduce((s, t) => s + t.amount, 0).toLocaleString('ko-KR')}원</span>
-            </div>
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">총 출금</span>
-              <span className="mypage-asset-card__summary-value">-{allTx.filter(t => t.type === '출금').reduce((s, t) => s + t.amount, 0).toLocaleString('ko-KR')}원</span>
-            </div>
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">총 투자</span>
-              <span className="mypage-asset-card__summary-value">-{allTx.filter(t => t.type === '투자').reduce((s, t) => s + t.amount, 0).toLocaleString('ko-KR')}원</span>
-            </div>
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">추가 매수</span>
-              <span className="mypage-asset-card__summary-value">-{allTx.filter(t => t.type === '매수').reduce((s, t) => s + t.amount, 0).toLocaleString('ko-KR')}원</span>
-            </div>
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">누적 배당</span>
-              <span className="mypage-asset-card__summary-value up">+{p.totalDividends.toLocaleString('ko-KR')}원</span>
-            </div>
-            <div className="mypage-asset-card__summary-divider" />
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">평가 금액</span>
-              <span className="mypage-asset-card__summary-value">{totalCurrentValue.toLocaleString('ko-KR')}원</span>
-            </div>
-            <div className="mypage-asset-card__summary-row">
-              <span className="mypage-asset-card__summary-label">예수금 잔액</span>
-              <span className="mypage-asset-card__summary-value">{p.tokenBalance.toLocaleString('ko-KR')}원</span>
-            </div>
-          </div>
+          <button className="mypage-asset-card__detail-btn" onClick={() => navigate('/asset')}>
+            자산 상세 보기
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18" /></svg>
+          </button>
           <div className="mypage-asset-card__actions">
             <button className="mypage-asset-card__btn mypage-asset-card__btn--invest" onClick={() => navigate('/invest')}>
               투자하기
@@ -138,85 +120,108 @@ export default function MyPage() {
           <h3 className="mypage-portfolio__title">포트폴리오</h3>
         </div>
 
-        {/* Issued Holdings Cards */}
-        {issuedHoldings.map(h => {
-          const card = INVEST_CARDS.find(c => c.id === h.investCardId);
-          if (!card) return null;
-          const profit = h.currentValue - h.purchasePrice;
-          const rate = h.purchasePrice > 0 ? (profit / h.purchasePrice * 100).toFixed(1) : '0.0';
-          return (
-            <div className="mypage-bento__large" key={h.investCardId} onClick={() => navigate(`/invest/${card.id}`)}>
-              <div className="mypage-bento__large-top">
-                <div className="mypage-bento__icon-wrap">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#231F20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
-                  </svg>
-                </div>
-                <span className="mypage-bento__phase-tag">투자중</span>
-              </div>
-              <div className="mypage-bento__large-bottom">
-                <div className="mypage-bento__large-label">{card.name}</div>
-                <div className="mypage-bento__large-stats">
-                  <div className="mypage-bento__large-stat">
-                    <span className="mypage-bento__large-stat-label">투자 원금</span>
-                    <span className="mypage-bento__large-stat-value">{h.purchasePrice.toLocaleString('ko-KR')}원</span>
-                  </div>
-                  <div className="mypage-bento__large-stat">
-                    <span className="mypage-bento__large-stat-label">평가 금액</span>
-                    <span className="mypage-bento__large-stat-value">{h.currentValue.toLocaleString('ko-KR')}원</span>
-                  </div>
-                  <div className="mypage-bento__large-stat">
-                    <span className="mypage-bento__large-stat-label">수익률</span>
-                    <span className={`mypage-bento__large-stat-value ${profit >= 0 ? 'up' : 'down'}`}>{profit >= 0 ? '+' : ''}{rate}%</span>
-                  </div>
-                </div>
-                <div className="mypage-bento__large-period">
-                  <span>투자 기간 {h.elapsedMonths}/{h.periodMonths}개월</span>
-                  <span>월 배당 {h.monthlyYield}</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Small Cards */}
-        <div className="mypage-bento__row">
-          <div className="mypage-bento__small" style={{ cursor: 'pointer' }} onClick={() => setShowHoldings(true)}>
-            <div className="mypage-bento__icon-wrap">
-              <svg width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="#231F20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {/* 4 Box Grid */}
+        <div className="mypage-portfolio__grid">
+          <div className={`mypage-portfolio__box ${portfolioView === 'holdings' ? 'active' : ''}`} style={{ cursor: 'pointer' }} onClick={() => { setPortfolioView(portfolioView === 'holdings' ? 'none' : 'holdings'); setShowHoldings(portfolioView !== 'holdings'); }}>
+            <div className="mypage-portfolio__box-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
               </svg>
             </div>
-            <div className="mypage-bento__small-label">투자 상품 (보유 토큰)</div>
-            <div className="mypage-bento__small-value">{activeHoldings.length}</div>
+            <div className="mypage-portfolio__box-label">투자 상품</div>
+            <div className="mypage-portfolio__box-value">{activeHoldings.length}</div>
           </div>
-          <div className="mypage-bento__small">
-            <div className="mypage-bento__icon-wrap">
-              <svg width="16" height="21" viewBox="0 0 24 24" fill="none" stroke="#231F20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="mypage-portfolio__box" style={{ cursor: 'default' }}>
+            <div className="mypage-portfolio__box-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
             </div>
-            <div className="mypage-bento__small-label">누적 수익률</div>
-            <div className="mypage-bento__small-value">{cumulativeROI}%</div>
+            <div className="mypage-portfolio__box-label">누적 수익률</div>
+            <div className="mypage-portfolio__box-value">{cumulativeROI}%</div>
+          </div>
+          <div className={`mypage-portfolio__box mypage-portfolio__box--live ${portfolioView === 'live' ? 'active' : ''}`} onClick={() => setPortfolioView(portfolioView === 'live' ? 'none' : 'live')}>
+            <div className="mypage-portfolio__box-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div className="mypage-portfolio__box-label">투자중</div>
+            <div className="mypage-portfolio__box-value">{liveHoldings.length}</div>
+          </div>
+          <div className={`mypage-portfolio__box mypage-portfolio__box--delay ${portfolioView === 'delay' ? 'active' : ''}`} onClick={() => setPortfolioView(portfolioView === 'delay' ? 'none' : 'delay')}>
+            <div className="mypage-portfolio__box-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div className="mypage-portfolio__box-label">연체</div>
+            <div className="mypage-portfolio__box-value">{delayHoldings.length}</div>
           </div>
         </div>
+
+        {/* 확장 리스트: 투자중 */}
+        {portfolioView === 'live' && liveHoldings.length > 0 && (
+          <div className="mypage-portfolio__expand">
+            {liveHoldings.map(h => {
+              const card = INVEST_CARDS.find(c => c.id === h.investCardId);
+              if (!card) return null;
+              const profit = h.currentValue - h.purchasePrice;
+              const rate = h.purchasePrice > 0 ? (profit / h.purchasePrice * 100).toFixed(1) : '0.0';
+              return (
+                <div className="mypage-portfolio__expand-item" key={h.investCardId} onClick={() => navigate(`/invest/${card.id}`)}>
+                  <div className="mypage-portfolio__expand-left">
+                    <div className="mypage-portfolio__expand-name">{card.name}</div>
+                    <div className="mypage-portfolio__expand-meta">{h.tokensOwned}토큰 · {h.elapsedMonths}/{h.periodMonths}개월</div>
+                  </div>
+                  <div className="mypage-portfolio__expand-right">
+                    <div className={`mypage-portfolio__expand-rate ${profit >= 0 ? 'up' : 'down'}`}>{profit >= 0 ? '+' : ''}{rate}%</div>
+                    <div className="mypage-portfolio__expand-amount">{h.currentValue.toLocaleString('ko-KR')}원</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* 확장 리스트: 연체 */}
+        {portfolioView === 'delay' && delayHoldings.length > 0 && (
+          <div className="mypage-portfolio__expand">
+            {delayHoldings.map(h => {
+              const card = INVEST_CARDS.find(c => c.id === h.investCardId);
+              if (!card) return null;
+              const profit = h.currentValue - h.purchasePrice;
+              const rate = h.purchasePrice > 0 ? (profit / h.purchasePrice * 100).toFixed(1) : '0.0';
+              return (
+                <div className="mypage-portfolio__expand-item" key={h.investCardId} onClick={() => navigate(`/invest/${card.id}`)}>
+                  <div className="mypage-portfolio__expand-left">
+                    <div className="mypage-portfolio__expand-name">{card.name}</div>
+                    <div className="mypage-portfolio__expand-meta">{h.tokensOwned}토큰 · {h.elapsedMonths}/{h.periodMonths}개월</div>
+                  </div>
+                  <div className="mypage-portfolio__expand-right">
+                    <div className={`mypage-portfolio__expand-rate down`}>{profit >= 0 ? '+' : ''}{rate}%</div>
+                    <div className="mypage-portfolio__expand-amount">{h.currentValue.toLocaleString('ko-KR')}원</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* 투자 내역 */}
       <section className="mypage-tx">
-        <h3 className="mypage-section-title">투자 내역</h3>
-        <div className="mypage-tx__filters">
-          {TX_FILTERS.map(f => (
-            <button key={f} className={`notice-filter__btn ${txFilter === f ? 'notice-filter__btn--active' : ''}`} onClick={() => setTxFilter(f)}>
-              {f}
-            </button>
-          ))}
+        <div className="mypage-tx__header">
+          <h3 className="mypage-section-title" style={{ marginBottom: 0 }}>투자 내역</h3>
+          <button className="mypage-tx__more" onClick={() => navigate('/tx-history')}>
+            상세 보기
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 6 15 12 9 18" /></svg>
+          </button>
         </div>
         <div className="mypage-tx__list">
-          {filteredTx.length === 0 && <div className="mypage-empty">해당 거래 내역이 없습니다.</div>}
-          {filteredTx.map(tx => {
+          {allTx.slice(0, 5).map(tx => {
             const isPlus = tx.type === '만기' || tx.type === '입금';
-            const isMinus = tx.type === '투자' || tx.type === '출금';
+            const isMinus = tx.type === '투자' || tx.type === '출금' || tx.type === '매수';
             return (
               <div className="mypage-tx__item" key={tx.id}>
                 <div className="mypage-tx__item-left">
@@ -233,36 +238,6 @@ export default function MyPage() {
             );
           })}
         </div>
-
-        {/* 만기 종료 상품 */}
-        {(() => {
-          const endedCards = p.holdings.filter(h => h.status === '투자 종료');
-          if (endedCards.length === 0) return null;
-          return (
-            <div className="mypage-ended">
-              <button className="mypage-ended__toggle" onClick={() => setShowHistory(prev => !prev)}>
-                <span>만기 종료 상품</span>
-                <span className="mypage-ended__count">{endedCards.length}</span>
-                <svg className={`mypage-ended__arrow ${showHistory ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </button>
-              {showHistory && endedCards.map(h => {
-                const card = INVEST_CARDS.find(c => c.id === h.investCardId);
-                if (!card) return null;
-                return (
-                  <div className="mypage-ended__item" key={h.investCardId} onClick={() => navigate(`/invest/${h.investCardId}`)}>
-                    <div>
-                      <div className="mypage-ended__name">{card.name}</div>
-                      <div className="mypage-ended__meta">{h.tokensOwned}개 · {h.monthlyYield}</div>
-                    </div>
-                    <span className="mypage-ended__badge">종료</span>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })()}
       </section>
 
       {/* Preferences */}
@@ -328,48 +303,58 @@ export default function MyPage() {
 
       {/* 투자 상품 내역 */}
       {showHoldings && (
-        <div className="holdings-overlay" onClick={() => setShowHoldings(false)}>
+        <div className="holdings-overlay" onClick={() => { setShowHoldings(false); setPortfolioView('none'); }}>
           <div className="holdings-sheet" onClick={e => e.stopPropagation()}>
             <div className="holdings-sheet__handle" />
             <h3 className="holdings-sheet__title">내 투자 상품</h3>
             <div className="holdings-sheet__list">
-              {[...activeHoldings].sort((a, b) => (b.phase === '투자중' ? 1 : 0) - (a.phase === '투자중' ? 1 : 0)).map(h => {
+              {[...activeHoldings].sort((a, b) => {
+                const order = { live: 0, delay: 1, pending: 2 } as Record<string, number>;
+                const ca = INVEST_CARDS.find(c => c.id === a.investCardId);
+                const cb = INVEST_CARDS.find(c => c.id === b.investCardId);
+                return (order[ca?.productStatus || ''] ?? 9) - (order[cb?.productStatus || ''] ?? 9);
+              }).map(h => {
                 const card = INVEST_CARDS.find(c => c.id === h.investCardId);
                 if (!card) return null;
-                const isIssued = h.phase === '투자중';
-                const profit = isIssued ? h.currentValue - h.purchasePrice : 0;
-                const profitRate = isIssued && h.purchasePrice > 0 ? (profit / h.purchasePrice * 100).toFixed(1) : '0.0';
+                const status = card.productStatus;
+                const isLive = status === 'live' || status === 'delay';
+                const profit = isLive ? h.currentValue - h.purchasePrice : 0;
+                const profitRate = isLive && h.purchasePrice > 0 ? (profit / h.purchasePrice * 100).toFixed(1) : '0.0';
+                const badgeCls = status === 'delay' ? 'delay' : status === 'live' ? 'live' : 'pending';
+                const badgeLabel = status === 'delay' ? '연체' : status === 'live' ? '투자중' : '모집중';
                 return (
                   <div className="holdings-sheet__item" key={h.investCardId}>
                     <div className="holdings-sheet__item-top">
                       <span className="holdings-sheet__item-name">{card.name}</span>
-                      <span className={`holdings-sheet__item-phase ${isIssued ? 'issued' : ''}`}>
-                        {h.phase}
+                      <span className={`holdings-sheet__item-phase holdings-sheet__item-phase--${badgeCls}`}>
+                        {badgeLabel}
                       </span>
                     </div>
                     <div className="holdings-sheet__item-row">
                       <div className="holdings-sheet__item-col">
-                        <span className="holdings-sheet__item-label">{isIssued ? '투자 원금' : '신청 금액'}</span>
+                        <span className="holdings-sheet__item-label">{isLive ? '투자 원금' : '신청 금액'}</span>
                         <span className="holdings-sheet__item-value">{formatKRW(h.purchasePrice)}</span>
                       </div>
-                      <div className={`holdings-sheet__item-col ${!isIssued ? 'disabled' : ''}`}>
+                      <div className={`holdings-sheet__item-col ${!isLive ? 'disabled' : ''}`}>
                         <span className="holdings-sheet__item-label">평가 금액</span>
-                        <span className="holdings-sheet__item-value">{isIssued ? formatKRW(h.currentValue) : '-'}</span>
+                        <span className="holdings-sheet__item-value">{isLive ? formatKRW(h.currentValue) : '-'}</span>
                       </div>
                       <div className="holdings-sheet__item-col">
-                        <span className="holdings-sheet__item-label">투자 기간</span>
+                        <span className="holdings-sheet__item-label">{isLive ? '투자 기간' : '예상 기간'}</span>
                         <span className="holdings-sheet__item-value">
-                          {h.periodMonths ? (isIssued ? `${h.elapsedMonths}/${h.periodMonths}개월` : `${h.periodMonths}개월`) : '-'}
+                          {h.periodMonths ? (isLive ? `${h.elapsedMonths}/${h.periodMonths}개월` : `${h.periodMonths}개월`) : '-'}
                         </span>
                       </div>
                     </div>
                     <div className="holdings-sheet__item-footer">
                       <div className="holdings-sheet__item-sub">
-                        <span>{h.tokensOwned}개 {isIssued ? '보유' : '신청'}</span>
+                        <span>{h.tokensOwned}토큰 {isLive ? '보유' : '신청'}</span>
                         <span>·</span>
-                        <span className={isIssued ? 'holdings-sheet__profit' : ''}>{isIssued ? `+${profitRate}%` : `예상 ${h.monthlyYield}`}</span>
+                        <span className={isLive ? (profit >= 0 ? 'holdings-sheet__profit' : 'holdings-sheet__loss') : ''}>
+                          {isLive ? `${profit >= 0 ? '+' : ''}${profitRate}%` : `예상 ${h.monthlyYield}`}
+                        </span>
                       </div>
-                      <button className="holdings-sheet__item-link" onClick={() => { setShowHoldings(false); navigate('/my?sheet=holdings', { replace: true }); setTimeout(() => navigate(`/invest/${h.investCardId}`), 0); }}>
+                      <button className="holdings-sheet__item-link" onClick={() => { setShowHoldings(false); setPortfolioView('none'); navigate(`/invest/${h.investCardId}`); }}>
                         상세보기
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="9 6 15 12 9 18" />

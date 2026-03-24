@@ -10,7 +10,7 @@ export default function AssetDetailPage() {
   const activeHoldings = p.holdings.filter(h => h.status === '투자중');
   const totalInvested = activeHoldings.reduce((s, h) => s + h.purchasePrice, 0);
   const totalCurrentValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
-  const totalAsset = totalCurrentValue + p.totalDividends + p.tokenBalance + p.cashBalance;
+  const totalAsset = totalCurrentValue + p.cashBalance;
   const changeAmount = totalCurrentValue - totalInvested;
   const changeRate = totalInvested > 0 ? (changeAmount / totalInvested * 100).toFixed(1) : '0.0';
   const isUp = changeAmount >= 0;
@@ -86,15 +86,15 @@ export default function AssetDetailPage() {
           <h3 className="asset-detail__section-title">자산 현황</h3>
           <div className="asset-detail__rows">
             <div className="asset-detail__row">
-              <span className="asset-detail__row-label">평가 금액</span>
-              <span className="asset-detail__row-value">{krw(totalCurrentValue)}원</span>
+              <span className="asset-detail__row-label">투자 원금</span>
+              <span className="asset-detail__row-value">{krw(totalInvested)}원</span>
             </div>
             <div className="asset-detail__row">
-              <span className="asset-detail__row-label">토큰 잔액</span>
-              <span className="asset-detail__row-value">{krw(p.tokenBalance)}원</span>
+              <span className="asset-detail__row-label">배당금</span>
+              <span className="asset-detail__row-value up">+{krw(totalCurrentValue - totalInvested)}원</span>
             </div>
             <div className="asset-detail__row">
-              <span className="asset-detail__row-label">출금 가능 현금</span>
+              <span className="asset-detail__row-label">현금</span>
               <span className="asset-detail__row-value">{krw(p.cashBalance)}원</span>
             </div>
             <div className="asset-detail__divider" />

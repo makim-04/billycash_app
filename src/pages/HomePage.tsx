@@ -16,7 +16,7 @@ const FEATURED_CARD = INVEST_CARDS.find(c => c.id === 7)!;
 const SECONDARY_1 = INVEST_CARDS.find(c => c.id === 2)!;  // 연남동 뮤트커피
 const SECONDARY_2 = INVEST_CARDS.find(c => c.id === 4)!;  // 망원동 키친베이스
 
-const totalAsset = MOCK_PORTFOLIO.currentValue + MOCK_PORTFOLIO.totalDividends;
+const totalAsset = MOCK_PORTFOLIO.currentValue + MOCK_PORTFOLIO.cashBalance;
 const growthRate = ((MOCK_PORTFOLIO.currentValue - MOCK_PORTFOLIO.totalInvested) / MOCK_PORTFOLIO.totalInvested * 100).toFixed(1);
 
 export default function HomePage() {

@@ -11,7 +11,7 @@ export default function DepositPage() {
   const [step, setStep] = useState<Step>('input');
   const [amount, setAmount] = useState(0);
 
-  const balance = MOCK_PORTFOLIO.tokenBalance;
+  const balance = MOCK_PORTFOLIO.cashBalance;
   const accountNo = '123-456-789012';
   const bankName = '하나은행';
 
