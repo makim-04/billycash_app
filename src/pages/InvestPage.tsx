@@ -17,7 +17,7 @@ const CATS = [
 const MY_STATUS_FILTERS: { key: ProductStatus | 'all'; label: string }[] = [
   { key: 'all', label: '전체' },
   { key: 'pending', label: '모집중' },
-  { key: 'live', label: '투자중' },
+  { key: 'live', label: '보유중' },
   { key: 'expired', label: '만기 상환' },
   { key: 'delay', label: '연체' },
 ];

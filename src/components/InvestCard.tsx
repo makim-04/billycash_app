@@ -18,7 +18,7 @@ interface Props {
 const STATUS_CONFIG: Record<ProductStatus, { label: string; cls: string; progCls: string; pctLabel: string; pctCls: string; accentCls: string }> = {
   pending:  { label: '모집중',     cls: 'status-pending',  progCls: 'prog-bar-green', pctLabel: '모집중',     pctCls: 'ps-pending',  accentCls: 'accent-pending' },
   ready:    { label: '모집완료',   cls: 'status-ready',    progCls: 'prog-bar-gray',  pctLabel: '모집완료',   pctCls: 'ps-ready',    accentCls: 'accent-ready' },
-  live:     { label: '투자중',     cls: 'status-live',     progCls: 'prog-bar-green', pctLabel: '투자중',     pctCls: 'ps-live',     accentCls: 'accent-live' },
+  live:     { label: '보유중',     cls: 'status-live',     progCls: 'prog-bar-green', pctLabel: '보유중',     pctCls: 'ps-live',     accentCls: 'accent-live' },
   expired:  { label: '만기 상환',  cls: 'status-expired',  progCls: 'prog-bar-black',  pctLabel: '만기 상환',  pctCls: 'ps-expired',  accentCls: 'accent-expired' },
   done:     { label: '완제됨',     cls: 'status-done',     progCls: 'prog-bar-gray',  pctLabel: '완제됨',     pctCls: 'ps-done',     accentCls: 'accent-done' },
   delay:    { label: '연체',       cls: 'status-delay',    progCls: 'prog-bar-red',   pctLabel: '연체',       pctCls: 'ps-delay',    accentCls: 'accent-delay' },

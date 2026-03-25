@@ -133,7 +133,7 @@ export default function HomePage() {
         return (
           <section className="home-live">
             <div className="home-live__header">
-              <h2 className="home-live__title">내 투자 진행중</h2>
+              <h2 className="home-live__title">내 보유 토큰</h2>
             </div>
             <div className="home-live__list">
               {liveHoldings.map(({ card, holding }) => {
