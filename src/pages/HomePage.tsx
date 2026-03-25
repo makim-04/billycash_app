@@ -17,8 +17,14 @@ const FEATURED_CARD = INVEST_CARDS.find(c => c.id === 7)!;
 const SECONDARY_1 = INVEST_CARDS.find(c => c.id === 2)!;  // 연남동 뮤트커피
 const SECONDARY_2 = INVEST_CARDS.find(c => c.id === 4)!;  // 망원동 키친베이스
 
-const totalAsset = MOCK_PORTFOLIO.currentValue + MOCK_PORTFOLIO.cashBalance;
-const growthRate = ((MOCK_PORTFOLIO.currentValue - MOCK_PORTFOLIO.totalInvested) / MOCK_PORTFOLIO.totalInvested * 100).toFixed(1);
+// ── 자산 = 보유토큰 원금 + 현금 (MyPage와 동일) ──
+const activeHoldings = MOCK_PORTFOLIO.holdings.filter(h => h.status === '투자중');
+const tokenPrincipal = activeHoldings.reduce((s, h) => s + h.purchasePrice, 0);
+const totalAsset = tokenPrincipal + MOCK_PORTFOLIO.cashBalance;
+const totalCurrentValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
+const changeAmount = totalCurrentValue - tokenPrincipal;
+const changeRate = tokenPrincipal > 0 ? (changeAmount / tokenPrincipal * 100).toFixed(1) : '0.0';
+const isUpHome = changeAmount >= 0;
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -30,7 +36,7 @@ export default function HomePage() {
       <section className="home-portfolio">
         <div className="home-portfolio__top">
           <div className="home-portfolio__label">
-            총 투자 자산
+            자산
             <span className="home-portfolio__tooltip-wrap">
               <button className="home-portfolio__tooltip-trigger" onClick={() => setShowAssetTooltip(v => !v)}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -39,7 +45,7 @@ export default function HomePage() {
               </button>
               {showAssetTooltip && (
                 <div className="home-portfolio__tooltip" onClick={() => setShowAssetTooltip(false)}>
-                  전체 자산 = 투자 평가액 + 모집중 + 만기 상환 + 현금
+                  자산 = 보유토큰 원금 + 현금
                 </div>
               )}
             </span>
@@ -65,8 +71,8 @@ export default function HomePage() {
           <span className="home-portfolio__unit">원</span>
         </div>
         <div className="home-portfolio__growth">
-          <span className="home-portfolio__badge">+{growthRate}%</span>
-          <span className="home-portfolio__growth-label">투자 대비 성장</span>
+          <span className="home-portfolio__badge">{isUpHome ? '+' : ''}{changeRate}%</span>
+          <span className="home-portfolio__growth-label">{isUpHome ? '+' : ''}{changeAmount.toLocaleString('ko-KR')}원 전월 대비</span>
         </div>
       </section>
 

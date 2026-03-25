@@ -37,11 +37,12 @@ export default function MyPage() {
 
   const p = MOCK_PORTFOLIO;
   const activeHoldings = p.holdings.filter(h => h.status === '투자중');
-  const totalInvested = activeHoldings.reduce((s, h) => s + h.purchasePrice, 0);
+  // ── 자산 = 보유토큰 원금 + 현금 (HomePage와 동일) ──
+  const tokenPrincipal = activeHoldings.reduce((s, h) => s + h.purchasePrice, 0);
   const totalCurrentValue = activeHoldings.reduce((s, h) => s + h.currentValue, 0);
-  const totalAsset = totalCurrentValue + p.cashBalance;
-  const changeAmount = totalCurrentValue - totalInvested;
-  const changeRate = totalInvested > 0 ? (changeAmount / totalInvested * 100).toFixed(1) : '0.0';
+  const totalAsset = tokenPrincipal + p.cashBalance;
+  const changeAmount = totalCurrentValue - tokenPrincipal;
+  const changeRate = tokenPrincipal > 0 ? (changeAmount / tokenPrincipal * 100).toFixed(1) : '0.0';
   const isUp = changeAmount >= 0;
 
   // 투자중 상품
@@ -55,7 +56,7 @@ export default function MyPage() {
     return card && card.productStatus === 'delay';
   });
   // 누적 수익률
-  const cumulativeROI = totalInvested > 0 ? ((totalCurrentValue + p.totalDividends - totalInvested) / totalInvested * 100).toFixed(1) : '0.0';
+  const cumulativeROI = tokenPrincipal > 0 ? ((totalCurrentValue + p.totalDividends - tokenPrincipal) / tokenPrincipal * 100).toFixed(1) : '0.0';
 
   // 거래 내역 (날짜순 정렬)
   const allTx = [...p.transactions].sort((a, b) => b.date.localeCompare(a.date));
@@ -75,7 +76,7 @@ export default function MyPage() {
         <div className="mypage-asset-card">
           <div className="mypage-asset-card__glow" />
           <div className="mypage-asset-card__label">
-            총 자산
+            자산
             <span className="mypage-tooltip-wrap">
               <button className="mypage-tooltip__trigger" onClick={() => setShowTooltip(v => !v)}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -84,7 +85,7 @@ export default function MyPage() {
               </button>
               {showTooltip && (
                 <div className="mypage-tooltip" onClick={() => setShowTooltip(false)}>
-                  총 자산 = 투자 원금 + 배당금 + 현금
+                  자산 = 보유토큰 원금 + 현금
                 </div>
               )}
             </span>

@@ -18,6 +18,7 @@ import AccountPage from './pages/AccountPage'
 import AssetDetailPage from './pages/AssetDetailPage'
 import TxHistoryPage from './pages/TxHistoryPage'
 import HoldingsListPage from './pages/HoldingsListPage'
+import DepositWithdrawPage from './pages/DepositWithdrawPage'
 
 function RequireAuth() {
   const { isLoggedIn } = useAuth();
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="/asset" element={<AssetDetailPage />} />
             <Route path="/tx-history" element={<TxHistoryPage />} />
             <Route path="/holdings" element={<HoldingsListPage />} />
+            <Route path="/deposit-withdraw" element={<DepositWithdrawPage />} />
           </Route>
         </Route>
       </Routes>
